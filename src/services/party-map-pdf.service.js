@@ -2,9 +2,9 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const ejs=require('ejs');
-const puppeteer=require('puppeteer');
 const mapService=require('./reportes-mapa.service');
 const {buildMapSvg}=require('./reference-map-pdf.service');
+const pagedPdf=require('./paged-map-pdf.service');
 function logoDataUri(url){
  const file=path.resolve('./public',String(url||'').replace(/^\/+/,''));
  if(!url||!fs.existsSync(file))return '';
@@ -38,11 +38,6 @@ async function renderGeneral({officeId}){
  const mapSvg=buildMapSvg(municipalities,[...colorByMunicipality.keys()],row=>colorByMunicipality.get(row.municipio_id)||'#AEB6C1');
  return ejs.renderFile(path.resolve('./templates/reportes/party-map-general.ejs'),{parties:data.partidos.map(withEmbeddedLogos),rows,mapSvg,covered:data.resumen.municipios_con_partido,pending:data.resumen.municipios_sin_partido,generatedAt:new Intl.DateTimeFormat('es-MX',{dateStyle:'long',timeStyle:'short'}).format(new Date())});
 }
-async function writePdf(html,output){
- const browser=await puppeteer.launch({headless:true,args:['--no-sandbox']});
- try{const page=await browser.newPage();page.setDefaultNavigationTimeout(120000);page.setDefaultTimeout(120000);await page.emulateMediaType('print');await page.setContent(html,{waitUntil:'domcontentloaded',timeout:120000});await page.pdf({path:output,printBackground:true,preferCSSPageSize:true,margin:{top:0,right:0,bottom:0,left:0},timeout:120000});}
- finally{await browser.close()}
-}
 exports.renderPreview=render;
 exports.renderGeneralPreview=renderGeneral;
 exports.generate=async({officeId,key})=>{
@@ -50,13 +45,13 @@ exports.generate=async({officeId,key})=>{
  const directory=path.resolve('./storage/pdfs');fs.mkdirSync(directory,{recursive:true});
  const safe=party.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'').toUpperCase();
  const output=path.join(directory,`MAPA_PARTIDO_${safe||'SIN_PARTIDO'}.pdf`);
- await writePdf(html,output);
+ await pagedPdf.writePdf(html,output);
  return output;
 };
 exports.generateGeneral=async({officeId})=>{
  const html=await renderGeneral({officeId});
  const directory=path.resolve('./storage/pdfs');fs.mkdirSync(directory,{recursive:true});
  const output=path.join(directory,'MAPA_GENERAL_PARTIDOS.pdf');
- await writePdf(html,output);
+ await pagedPdf.writePdf(html,output);
  return output;
 };
