@@ -4,7 +4,7 @@ const HOST = process.env.HOST || '0.0.0.0';
 
 // El servicio de Render permanece cerrado a la captura mientras se termina
 // la migración. Así se monta el disco sin crear una SQLite vacía en producción.
-if (process.env.RENDER === 'true') {
+if (process.env.RENDER === 'true' && process.env.MUNICIPAL_APP_READY !== 'true') {
   const http = require('node:http');
 
   http.createServer((req, res) => {

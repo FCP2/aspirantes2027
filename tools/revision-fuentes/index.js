@@ -7,7 +7,11 @@ const { leerFichaLocal } = require('./src/leer-local');
 const { compararFuente } = require('./src/comparar');
 
 const projectRoot = path.resolve(__dirname, '..', '..');
-const inputDir = path.join(__dirname, 'entradas');
+const usePostgres = process.env.RENDER === 'true'
+  || process.env.MUNICIPAL_DB_ENGINE === 'postgres';
+const inputDir = usePostgres
+  ? path.join(projectRoot, 'storage', 'private', 'revision-fuentes')
+  : path.join(__dirname, 'entradas');
 const dbPath = path.join(projectRoot, 'data', 'municipal.sqlite');
 
 function listarFuentes() {
@@ -32,7 +36,9 @@ function resolverFuente(fileName) {
 function analizar(fileName) {
   const sourcePath = resolverFuente(fileName);
   if (!sourcePath) return { fuentes: [], fuente: null, resultados: [], totales: {} };
-  if (!fs.existsSync(dbPath)) throw new Error('No se encontró la base municipal para consulta.');
+  if (!usePostgres && !fs.existsSync(dbPath)) {
+    throw new Error('No se encontró la base municipal para consulta.');
+  }
   const fuente = extraerFuente(sourcePath);
   const locales = leerFichaLocal(dbPath);
   const comparison = compararFuente(fuente, locales);

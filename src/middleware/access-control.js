@@ -3,7 +3,8 @@
 const crypto = require('node:crypto');
 const ACCESS_SESSION_MS = 3 * 24 * 60 * 60 * 1000;
 
-const enabled = () => String(process.env.ACCESS_CONTROL_ENABLED || '').toLowerCase() === 'true';
+const enabled = () => process.env.RENDER === 'true'
+  || String(process.env.ACCESS_CONTROL_ENABLED || '').toLowerCase() === 'true';
 const tokenFor = () => String(process.env.EDITOR_ACCESS_TOKEN || '').trim();
 
 function same(a, b) {

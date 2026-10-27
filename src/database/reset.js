@@ -1,4 +1,10 @@
 require('dotenv').config();
+if (process.env.RENDER === 'true' || process.env.MUNICIPAL_DB_ENGINE === 'postgres') {
+  throw new Error('db:reset está prohibido en PostgreSQL y en Render.');
+}
+if (process.env.CONFIRM_RESET_LOCAL !== 'BORRAR_DATOS_LOCALES') {
+  throw new Error('db:reset requiere CONFIRM_RESET_LOCAL=BORRAR_DATOS_LOCALES. No se borró ningún dato.');
+}
 const fs = require('fs');
 const path = require('path');
 

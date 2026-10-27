@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const crypto = require('crypto');
 const session = require('express-session');
+const createSessionStore = require('./config/session-store');
 const municipiosRoutes = require('./routes/municipios.routes');
 const fichasRoutes = require('./routes/fichas.routes');
 const personasRoutes = require('./routes/personas.routes');
@@ -14,9 +15,12 @@ const integracionActoresRoutes = require('./routes/integracion-actores.routes');
 const reportesMapaRoutes = require('./routes/reportes-mapa.routes');
 const accessRoutes = require('./routes/access.routes');
 const access = require('./middleware/access-control');
+const database = require('./config/database');
 
-// Importación inicial aditiva del directorio; no reemplaza datos de fichas.
-require('./database/personal-coordinacion.seed')();
+// La carga inicial pertenece a SQLite; PostgreSQL ya contiene la copia validada.
+if (process.env.RENDER !== 'true' && process.env.MUNICIPAL_DB_ENGINE !== 'postgres') {
+  require('./database/personal-coordinacion.seed')();
+}
 
 const app = express();
 app.set('trust proxy', 1);
@@ -25,10 +29,15 @@ app.set('views',path.join(__dirname,'..','views'));
 app.use(express.json({limit:'10mb'}));
 app.use(express.urlencoded({extended:true,limit:'10mb'}));
 const sessionSecret = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+if (process.env.RENDER === 'true' && !process.env.SESSION_SECRET) {
+  throw new Error('Falta SESSION_SECRET para las sesiones de Render.');
+}
 if (!process.env.SESSION_SECRET) console.warn('SESSION_SECRET no está configurado; las sesiones externas se cerrarán al reiniciar.');
+const sessionStore = createSessionStore();
 app.use(session({
   name: 'fichas.sid',
   secret: sessionSecret,
+  ...(sessionStore ? { store: sessionStore } : {}),
   resave: false,
   saveUninitialized: false,
   cookie: { httpOnly: true, sameSite: 'lax', secure: 'auto', maxAge: 3 * 24 * 60 * 60 * 1000 }
@@ -38,8 +47,19 @@ app.use('/vendor/sweetalert2',express.static(path.join(__dirname,'..','node_modu
 app.use('/vendor/bootstrap-icons',express.static(path.join(__dirname,'..','node_modules','bootstrap-icons','font')));
 app.use('/vendor/leaflet',express.static(path.join(__dirname,'..','node_modules','leaflet','dist')));
 app.use('/vendor/wellknown',express.static(path.join(__dirname,'..','node_modules','wellknown')));
-app.use('/storage',express.static(path.resolve('./storage')));
+app.use('/storage/photos', express.static(path.resolve('./storage/photos')));
+app.use('/storage/hoja2', access.requireRole('report'), express.static(path.resolve('./storage/hoja2')));
 app.use('/api/access', accessRoutes);
+
+app.get('/healthz', (_req, res) => {
+  try {
+    database.prepare('SELECT 1 AS ok').get();
+    res.type('text').send('ok');
+  } catch (error) {
+    console.error('Health check municipal:', error.message);
+    res.status(503).type('text').send('unavailable');
+  }
+});
 
 app.get('/',(req,res)=>res.redirect('/reportes/mapa'));
 app.use('/api/municipios', access.requireRole('report'), municipiosRoutes);

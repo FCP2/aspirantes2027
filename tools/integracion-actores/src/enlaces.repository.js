@@ -4,9 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
 
-const databasePath = path.resolve(
-  process.env.ACTORES_LINK_DB_PATH || path.join(process.cwd(), 'data', 'integracion-actores.sqlite')
-);
+const defaultPath = process.env.RENDER === 'true'
+  ? path.join(process.cwd(), 'storage', 'private', 'integracion-actores.sqlite')
+  : path.join(process.cwd(), 'data', 'integracion-actores.sqlite');
+const databasePath = path.resolve(process.env.ACTORES_LINK_DB_PATH || defaultPath);
 fs.mkdirSync(path.dirname(databasePath), { recursive: true });
 const db = new DatabaseSync(databasePath);
 db.exec(`

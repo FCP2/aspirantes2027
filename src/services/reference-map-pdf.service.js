@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ejs = require('ejs');
 const puppeteer = require('puppeteer');
+const sharp = require('sharp');
 const wellknown = require('wellknown');
 const mapService = require('./reportes-mapa.service');
 
@@ -20,12 +21,31 @@ function resolveFilePath(value) {
   return null;
 }
 
-function photoDataUri(value) {
-  const file = resolveFilePath(value);
-  if (!file) return '';
-  const ext = path.extname(file).toLowerCase();
-  const mime = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
-  return `data:${mime};base64,${fs.readFileSync(file).toString('base64')}`;
+async function photoThumbnails(values) {
+  const paths = [...new Set(values.map(resolveFilePath).filter(Boolean))];
+  const thumbnails = new Map();
+  let cursor = 0;
+
+  async function prepareNext() {
+    while (cursor < paths.length) {
+      const file = paths[cursor++];
+
+      try {
+        const buffer = await sharp(file)
+          .rotate()
+          .flatten({ background: '#f1eee8' })
+          .resize({ width: 300, height: 400, fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 76, mozjpeg: true })
+          .toBuffer();
+        thumbnails.set(file, `data:image/jpeg;base64,${buffer.toString('base64')}`);
+      } catch {
+        thumbnails.set(file, '');
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(4, paths.length) }, prepareNext));
+  return value => thumbnails.get(resolveFilePath(value)) || '';
 }
 
 function coordinates(geometry) {
@@ -100,6 +120,10 @@ async function render({ officeId, key }) {
   const municipalities = mapService.list(officeId);
   const presidencyRecords = reference.registros.filter(item => item.tipo_actor === 'PRESIDENCIA_MUNICIPAL');
   const deputyRecords = reference.registros.filter(item => item.tipo_actor === 'DIPUTACION_FEDERAL' || item.tipo_actor === 'DIPUTACION_LOCAL');
+  const photo = await photoThumbnails([
+    reference.foto_url,
+    ...reference.registros.map(record => record.foto_url)
+  ]);
   const uniqueMunicipalityIds = records => [...new Set(records.map(item => item.municipio_id))];
   const presidencyMunicipalityIds = uniqueMunicipalityIds(presidencyRecords);
   const deputyMunicipalityIds = uniqueMunicipalityIds(deputyRecords);
@@ -113,7 +137,7 @@ async function render({ officeId, key }) {
     presidencyMapSvg: buildMapSvg(municipalities, presidencyMunicipalityIds, reference.color || '#a8174b'),
     deputyMapSvg: buildMapSvg(municipalities, deputyMunicipalityIds, reference.color || '#a8174b'),
     generatedAt: new Intl.DateTimeFormat('es-MX',{dateStyle:'long',timeStyle:'short'}).format(new Date()),
-    photo: photoDataUri
+    photo
   });
 }
 

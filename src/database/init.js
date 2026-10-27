@@ -1,4 +1,7 @@
 require('dotenv').config();
+if (process.env.RENDER === 'true' || process.env.MUNICIPAL_DB_ENGINE === 'postgres') {
+  throw new Error('db:init solo se usa con SQLite local.');
+}
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
