@@ -132,8 +132,14 @@ exports.renderDraftPreview = async ({municipioId,officeId,payload}) => {
 async function htmlToPdfBytes(html,browser) {
   const page = await browser.newPage();
   try {
-    await page.setContent(html,{waitUntil:'networkidle0'});
+    page.setDefaultNavigationTimeout(120000);
+    page.setDefaultTimeout(120000);
+    await page.setContent(html,{
+      waitUntil:'domcontentloaded',
+      timeout:120000
+    });
     await page.evaluate(async () => {
+      if (document.fonts?.ready) await document.fonts.ready;
       await Promise.all(Array.from(document.images).map(image => {
         if (image.complete) return Promise.resolve();
         return new Promise(resolve => {
@@ -142,7 +148,13 @@ async function htmlToPdfBytes(html,browser) {
         });
       }));
     });
-    return await page.pdf({format:'A4',printBackground:true,preferCSSPageSize:true,margin:{top:0,right:0,bottom:0,left:0}});
+    return await page.pdf({
+      format:'A4',
+      printBackground:true,
+      preferCSSPageSize:true,
+      margin:{top:0,right:0,bottom:0,left:0},
+      timeout:120000
+    });
   } finally {
     await page.close();
   }
