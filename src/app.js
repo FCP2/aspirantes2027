@@ -3,6 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 const session = require('express-session');
 const createSessionStore = require('./config/session-store');
+const sessionDuration = require('./config/session-duration');
 const municipiosRoutes = require('./routes/municipios.routes');
 const fichasRoutes = require('./routes/fichas.routes');
 const personasRoutes = require('./routes/personas.routes');
@@ -40,7 +41,13 @@ app.use(session({
   ...(sessionStore ? { store: sessionStore } : {}),
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, sameSite: 'lax', secure: 'auto', maxAge: 3 * 24 * 60 * 60 * 1000 }
+  rolling: true,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: 'auto',
+    maxAge: sessionDuration
+  }
 }));
 app.use(express.static(path.join(__dirname,'..','public')));
 app.use('/vendor/sweetalert2',express.static(path.join(__dirname,'..','node_modules','sweetalert2','dist')));
