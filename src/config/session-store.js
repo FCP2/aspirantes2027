@@ -2,13 +2,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
 const session = require('express-session');
-
-const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+const sessionDuration = require('./session-duration');
 
 function expiresAt(value) {
   const cookieExpiry = value?.cookie?.expires;
   const parsed = cookieExpiry ? new Date(cookieExpiry).getTime() : NaN;
-  return Number.isFinite(parsed) ? parsed : Date.now() + THREE_DAYS_MS;
+  return Number.isFinite(parsed) ? parsed : Date.now() + sessionDuration;
 }
 
 class DiskSessionStore extends session.Store {
