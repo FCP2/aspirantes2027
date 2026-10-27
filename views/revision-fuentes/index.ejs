@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="actors-turnstile-site-key" content="<%= actorsTurnstileSiteKey %>">
+<title>Revisión inteligente de fuentes</title>
+<link rel="stylesheet" href="/vendor/sweetalert2/sweetalert2.min.css">
+<link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/revision-fuentes.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/typography.css?v=20260918-1">
+</head>
+<body>
+<header class="review-topbar">
+  <div class="brand"><div class="brandmark"><i class="bi bi-stars" aria-hidden="true"></i></div><div><strong>Revisión inteligente</strong><span><%= officeName %> · MÓDULO DE CONSULTA</span></div></div>
+  <div class="review-head-actions"><div class="readonly-badge"><span class="readonly-icon"><i class="bi bi-database-lock" aria-hidden="true"></i></span><span class="readonly-copy"><small>MODO DE CONSULTA</small><strong>Base municipal en solo lectura</strong></span></div><a class="button secondary" href="/reportes/mapa"><i class="bi bi-map"></i> REPORTES</a><a class="button secondary" href="/captura"><i class="bi bi-arrow-left"></i> VOLVER A CAPTURA</a></div>
+</header>
+
+<main class="review-shell">
+  <section class="hero-panel">
+    <div class="hero-heading"><span class="hero-symbol"><i class="bi bi-files" aria-hidden="true"></i></span><div><span class="hero-kicker">REVISIÓN DOCUMENTAL</span><h1>Comparación de fuentes y fichas municipales</h1><p>Consulta coincidencias y diferencias con la fuente seleccionada. La información capturada permanece sin cambios.</p></div></div>
+    <form id="sourceUpload" class="source-upload">
+      <input id="sourceFile" name="file" type="file" accept=".html,.htm,text/html" hidden>
+      <button type="button" class="button secondary" id="pickSource"><i class="bi bi-file-earmark-code"></i> SELECCIONAR HTML</button>
+      <button type="submit" class="button" id="uploadSource" disabled><i class="bi bi-cloud-arrow-up"></i> ANALIZAR FUENTE</button>
+    </form>
+  </section>
+
+  <section class="source-strip">
+    <div><span class="source-label">FUENTE ACTIVA</span><strong id="sourceTitle">Cargando…</strong><small id="sourceMeta"></small></div>
+    <label>CAMBIAR FUENTE<select id="sourceSelect" class="input"></select></label>
+  </section>
+
+  <section class="metrics-grid" aria-label="Resumen del análisis">
+    <button class="metric metric-action metric-municipios" id="municipiosMetric" type="button" title="Ver municipios encontrados"><span class="metric-icon"><i class="bi bi-geo-alt-fill"></i></span><div class="metric-copy"><small>MUNICIPIOS</small><strong id="metricMunicipios">—</strong><span>Consultar cobertura territorial</span></div><span class="metric-affordance"><i class="bi bi-arrow-up-right"></i></span></button>
+    <article class="metric metric-coincidencias"><span class="metric-icon"><i class="bi bi-patch-check-fill"></i></span><div class="metric-copy"><small>COINCIDENCIAS</small><strong id="metricCoinciden">—</strong><span>Sin diferencia detectable</span></div><span class="metric-signal"><i class="bi bi-check2"></i> VALIDADO</span></article>
+    <article class="metric metric-diferencias"><span class="metric-icon"><i class="bi bi-intersect"></i></span><div class="metric-copy"><small>DIFERENCIAS</small><strong id="metricDiferencias">—</strong><span>Casos que requieren atención</span></div><span class="metric-signal"><i class="bi bi-eye"></i> REVISAR</span></article>
+    <article class="metric metric-nuevos"><span class="metric-icon"><i class="bi bi-person-plus-fill"></i></span><div class="metric-copy"><small>NUEVOS EN FUENTE</small><strong id="metricNuevos">—</strong><span>Sin equivalente confiable</span></div><span class="metric-signal"><i class="bi bi-stars"></i> HALLAZGO</span></article>
+    <article class="metric metric-evidencias"><span class="metric-icon"><i class="bi bi-journal-bookmark-fill"></i></span><div class="metric-copy"><small>EVIDENCIAS</small><strong id="metricFuentes">—</strong><span>Enlaces documentales extraídos</span></div><span class="metric-signal"><i class="bi bi-link-45deg"></i> SOPORTE</span></article>
+  </section>
+
+  <section class="analysis-layout">
+    <aside class="summary-panel">
+      <div class="panel-title"><div><div class="eyebrow">DISTRIBUCIÓN</div><h2>Resultados</h2></div><span id="resultCount" class="count-pill">0</span></div>
+      <div id="statusSummary" class="status-summary"></div>
+      <div class="safety-note"><i class="bi bi-info-circle"></i><p>Estos resultados son sugerencias. Ningún dato de la ficha se actualiza desde esta pantalla.</p></div>
+    </aside>
+
+    <section class="results-panel">
+      <div class="filters">
+        <label class="search-filter"><i class="bi bi-search"></i><input id="searchInput" placeholder="Buscar municipio o persona"></label>
+        <select id="municipioFilter" class="input"><option value="">TODOS LOS MUNICIPIOS</option></select>
+        <select id="statusFilter" class="input"><option value="">TODOS LOS RESULTADOS</option></select>
+      </div>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead><tr><th class="number-column">#</th><th>Municipio</th><th>Persona</th><th>Comparación</th><th>Partidos</th><th>Confianza</th><th></th></tr></thead>
+          <tbody id="resultsBody"><tr><td colspan="7" class="loading-cell"><span class="spinner"></span> Analizando fuente…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="detailBackdrop" class="detail-backdrop hidden">
+  <aside class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <header><div><div class="eyebrow" id="detailMunicipio"></div><h2 id="detailTitle">Detalle</h2></div><button id="closeDetail" type="button" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button></header>
+    <div id="detailContent" class="detail-content"></div>
+  </aside>
+</div>
+
+<div id="actorBackdrop" class="actor-backdrop hidden">
+  <section class="actor-viewer" role="dialog" aria-modal="true" aria-labelledby="actorViewerTitle">
+    <header class="actor-viewer-header">
+      <div class="actor-viewer-brand"><span><i class="bi bi-person-vcard"></i></span><div><small>SISTEMA DE ACTORES POLÍTICOS</small><h2 id="actorViewerTitle">Expediente</h2><p id="actorViewerMeta"></p></div></div>
+      <div class="actor-viewer-actions">
+        <button id="actorRelink" class="button secondary" type="button"><i class="bi bi-arrow-repeat"></i> CAMBIAR ENLACE</button>
+        <a id="actorOpenPdf" class="button secondary" href="#" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> ABRIR PDF</a>
+        <button id="actorLogout" class="button actor-logout" type="button"><i class="bi bi-box-arrow-right"></i> CERRAR SESIÓN</button>
+        <button id="actorClose" class="actor-close" type="button" aria-label="Cerrar expediente"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </header>
+    <div id="actorLoading" class="actor-loading"><span class="spinner"></span> Solicitando expediente autorizado…</div>
+    <iframe id="actorPdfFrame" title="Expediente del Sistema de Actores Políticos"></iframe>
+  </section>
+</div>
+
+<script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script src="/js/core/actors-turnstile.js?v=20260908-1"></script>
+<script src="/js/revision-fuentes/index.js?v=20260908-turnstile-1"></script>
+</body>
+</html>

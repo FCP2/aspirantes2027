@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<style>
+@page {
+  size: Letter landscape;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: #e5e7eb;
+  color: #27313d;
+  font-family: Arial, Helvetica, sans-serif;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.page {
+  width: 279.4mm;
+  height: 215.9mm;
+  position: relative;
+  overflow: hidden;
+  padding: 18mm 14mm 14mm;
+  background: #f5f0e7;
+  break-after: page;
+  page-break-after: always;
+}
+
+.page:last-child {
+  break-after: auto;
+}
+
+.header {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 14mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8f173d;
+  border-bottom: 2.2mm solid #c7a56b;
+  color: #fff;
+  font-size: 13pt;
+  font-weight: 800;
+  letter-spacing: .03em;
+}
+
+.cover-content {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  align-items: center;
+  gap: 10mm;
+}
+
+.map {
+  height: 163mm;
+  display: grid;
+  place-items: center;
+}
+
+.map svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2mm 2mm rgba(55, 41, 32, .18));
+}
+
+.map-labels text {
+  font-size: 4px;
+  font-weight: 800;
+  fill: #fff;
+  paint-order: stroke;
+  stroke: #6f1734;
+  stroke-width: 1px;
+}
+
+.cover-summary {
+  padding: 8mm;
+  border-left: 1mm solid #c7a56b;
+}
+
+.cover-summary small,
+.cover-summary strong,
+.cover-summary span {
+  display: block;
+}
+
+.cover-summary small {
+  color: #9a7544;
+  font-size: 8pt;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.cover-summary h1 {
+  margin: 3mm 0 9mm;
+  color: #71132f;
+  font-size: 25pt;
+  line-height: 1.06;
+}
+
+.cover-kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2mm;
+}
+
+.cover-kpis div {
+  padding: 4mm;
+  background: rgba(255, 255, 255, .72);
+  border-top: 1.5mm solid #8f173d;
+}
+
+.cover-kpis strong {
+  color: #8f173d;
+  font-size: 23pt;
+}
+
+.cover-kpis span {
+  margin-top: 1mm;
+  color: #6c7178;
+  font-size: 7pt;
+}
+
+.detail-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 4mm;
+}
+
+.detail-title h2 {
+  margin: 0;
+  color: #71132f;
+  font-size: 15pt;
+}
+
+.detail-title span {
+  color: #8a775f;
+  font-size: 7pt;
+  font-weight: 700;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, 38mm);
+  gap: 3mm 5mm;
+}
+
+.card {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 25mm minmax(0, 1fr);
+  gap: 4mm;
+  align-items: center;
+  padding: 3mm;
+  background: rgba(255, 255, 255, .76);
+  border-left: 1.5mm solid #8f173d;
+  box-shadow: 0 .7mm 2mm rgba(61, 45, 35, .08);
+}
+
+.photo,
+.photo-empty {
+  width: 23mm;
+  height: 30mm;
+  border-radius: 2mm;
+  background: #e2ddd4;
+}
+
+.photo {
+  object-fit: contain;
+  object-position: center;
+}
+
+.photo-empty {
+  display: grid;
+  place-items: center;
+  color: #8e8175;
+  font-size: 6pt;
+}
+
+.card-copy {
+  min-width: 0;
+}
+
+.municipality {
+  display: block;
+  margin-bottom: 1.5mm;
+  color: #a0773c;
+  font-size: 6pt;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.card h3 {
+  margin: 0;
+  color: #71132f;
+  font-size: 10pt;
+  line-height: 1.15;
+}
+
+.party {
+  display: inline-block;
+  margin-top: 1.5mm;
+  padding: .8mm 1.8mm;
+  border-radius: 99px;
+  background: #eee5d8;
+  color: #564a40;
+  font-size: 6pt;
+  font-weight: 800;
+}
+
+.links {
+  display: grid;
+  grid-template-columns: <%= displayMode === 'ambos' ? '1fr 1fr' : '1fr' %>;
+  gap: 2mm;
+  margin-top: 2.2mm;
+}
+
+.links div {
+  min-width: 0;
+  padding-top: 1.2mm;
+  border-top: .3mm solid #d7c9b5;
+}
+
+.links strong,
+.links span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.links strong {
+  color: #9a7544;
+  font-size: 5.5pt;
+}
+
+.links span {
+  margin-top: .6mm;
+  color: #3f4852;
+  font-size: 6.5pt;
+  line-height: 1.18;
+}
+
+.footer {
+  position: absolute;
+  right: 14mm;
+  bottom: 5mm;
+  left: 14mm;
+  display: flex;
+  justify-content: space-between;
+  color: #8a8179;
+  font-size: 6pt;
+}
+
+@media screen {
+  html {
+    overflow: auto;
+  }
+
+  body {
+    width: 279.4mm;
+    margin: 0 auto;
+  }
+
+  .page {
+    margin-bottom: 12px;
+    box-shadow: 0 5px 20px rgba(35, 43, 52, .2);
+  }
+}
+</style>
+</head>
+<body>
+<% let folio = 1; %>
+
+<% if (general) { %>
+<section class="page">
+  <header class="header"><%= reportTitle || 'ASPIRANTES 2027 · REPORTE GENERAL' %></header>
+  <div class="cover-content">
+    <div class="map"><%- mapSvg %></div>
+    <aside class="cover-summary">
+      <small>ESTADO DE MÉXICO</small>
+      <h1><%= subreferenceName ? `Subreferente: ${subreferenceName}` : 'Distribución municipal de aspirantes' %></h1>
+      <div class="cover-kpis">
+        <div>
+          <strong><%= totalMunicipalities %></strong>
+          <span>MUNICIPIOS CON ASPIRANTES</span>
+        </div>
+        <div>
+          <strong><%= records.length %></strong>
+          <span>ASPIRANTES CAPTURADOS</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer">
+    <span>GENERADO: <%= generatedAt.toUpperCase() %></span>
+    <strong><%= folio++ %></strong>
+  </footer>
+</section>
+<% } %>
+
+<%
+const pageSize = 8;
+for (let start = 0; start < records.length; start += pageSize) {
+  const pageRecords = records.slice(start, start + pageSize);
+%>
+<section class="page">
+  <header class="header">
+    <%= general ? (reportTitle || 'ASPIRANTES 2027 · REPORTE GENERAL') : `ASPIRANTES 2027 · ${municipality.nombre}` %>
+  </header>
+  <div class="detail-title">
+    <h2><%= general ? (subreferenceName ? `Directorio por subreferente · ${subreferenceName}` : 'Directorio de aspirantes por municipio') : municipality.nombre %></h2>
+    <span><%= records.length %> REGISTROS</span>
+  </div>
+  <div class="cards">
+    <% pageRecords.forEach(record => { %>
+    <article class="card">
+      <% if (record.foto_data) { %>
+      <img class="photo" src="<%= record.foto_data %>" alt="">
+      <% } else { %>
+      <div class="photo-empty">SIN FOTO</div>
+      <% } %>
+      <div class="card-copy">
+        <% if (general) { %>
+        <span class="municipality"><%= record.clave %> · <%= record.municipio.toUpperCase() %></span>
+        <% } %>
+        <h3><%= record.nombre %></h3>
+        <span class="party"><%= record.partido %></span>
+        <div class="links">
+          <% if (displayMode !== 'subreferente') { %>
+          <div>
+            <strong>REFERENTE</strong>
+            <span><%= record.referente || 'SIN DATO' %></span>
+          </div>
+          <% } %>
+          <% if (displayMode !== 'referente') { %>
+          <div>
+            <strong>SUBREFERENTE</strong>
+            <span><%= record.subreferente || 'SIN DATO' %></span>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </article>
+    <% }) %>
+  </div>
+  <footer class="footer">
+    <span>GENERADO: <%= generatedAt.toUpperCase() %></span>
+    <strong><%= folio++ %></strong>
+  </footer>
+</section>
+<% } %>
+</body>
+</html>

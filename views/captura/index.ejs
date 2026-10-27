@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="actors-turnstile-site-key" content="<%= actorsTurnstileSiteKey %>">
+<title>Prototipo fichas</title>
+<link rel="stylesheet" href="/vendor/sweetalert2/sweetalert2.min.css">
+<link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/captura.css?v=20260918-actions-2">
+<link rel="stylesheet" href="/css/app-header.css?v=20260918-4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/typography.css?v=20260918-1">
+</head>
+<body>
+<header class="edomex-header">
+  
+  <!-- Contenedor de Identidad / Marca -->
+  <div class="edomex-brand-container">
+    <span class="map-brandmark" aria-hidden="true"><i class="bi bi-file-earmark-person-fill"></i></span>
+    <!-- Títulos de la Plataforma -->
+    <div class="edomex-title-group">
+      <span class="edomex-office-subtext"><%= officeName %></span>
+    </div>
+  </div>
+
+  <!-- Navegación de Acciones -->
+  <nav class="edomex-actions-nav" aria-label="Acciones principales del encabezado">
+    
+    <!-- Enlaces de Herramientas -->
+    <a class="edomex-btn edomex-btn-secondary" href="/reportes/mapa" title="Abrir reportes cartográficos">
+      <i class="bi bi-map" aria-hidden="true"></i>
+      <span>REPORTES</span>
+    </a>
+    
+    <a class="edomex-btn edomex-btn-secondary" href="/revision-fuentes" title="Abrir revisión inteligente">
+      <i class="bi bi-stars" aria-hidden="true"></i>
+      <span>REVISIÓN INTELIGENTE</span>
+    </a>
+
+    <!-- Botón Limpiar (Peligro/Acción destructiva) -->
+    <button class="edomex-btn edomex-btn-danger" id="clearAllTop" type="button">
+      <i class="bi bi-trash" aria-hidden="true"></i>
+      <span>LIMPIAR</span>
+    </button>
+    
+    <!-- Botón Guardar (Acción Primaria Institucional) -->
+    <button class="edomex-btn edomex-btn-primary" id="saveAllTop" type="button">
+      <i class="bi bi-check-circle" aria-hidden="true"></i>
+      <span>GUARDAR FICHA</span>
+    </button>
+    
+  </nav>
+</header>
+
+
+<main class="workspace">
+<aside class="municipios-panel">
+  <div class="eyebrow">MUNICIPIOS ASIGNADOS</div><h2>MUNICIPIOS <span id="municipioCount">0</span></h2>
+  <input id="municipioSearch" class="input" placeholder="BUSCAR MUNICIPIO">
+  <div class="general-controls"><button class="button secondary smallbtn" id="selectGeneralAll">SELECCIONAR CON INFORMACIÓN</button><button class="button smallbtn" id="generateGeneral" disabled>PDF GENERAL (0)</button><button class="button secondary smallbtn" id="generateGeneralExcel" disabled>EXCEL GENERAL (0)</button><label class="general-photo-option"><input id="generalExcelPhotos" type="checkbox"> INCLUIR FOTOS EN EXCEL</label><small id="generalStatus">MARCA LOS MUNICIPIOS QUE DESEAS INCLUIR</small></div>
+  <div id="municipiosList" class="municipios-list"></div>
+</aside>
+
+<section class="capture-panel">
+  <div class="capture-head"><div><div class="eyebrow">FICHA MUNICIPAL</div><h1 id="selectedMunicipio">SELECCIONE UN MUNICIPIO</h1></div><div class="record-meta"><span class="pill" id="recordStatus">PENDIENTE</span><span class="pill" id="recordRevision">REV. 0</span><span class="pill updated-pill" id="recordUpdated">SIN ACTUALIZAR</span></div></div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="funciones">FUNCIONES PÚBLICAS</button>
+    <button class="tab" data-tab="influencia">INFLUENCIA</button>
+    <button class="tab" data-tab="aspirantes">ASPIRANTES 2027</button>
+    <button class="tab" data-tab="territorio">PERSONAL EN TERRITORIO</button>
+    <button class="tab" data-tab="hoja2">ANEXOS JPG / PNG / PDF</button>
+  </nav>
+
+  <div class="tab-content active" id="tab-funciones">
+    <div class="section-card"><div class="section-title"><div><small>ACTORES POLÍTICOS EN FUNCIONES PÚBLICAS</small><h3>PRESIDENCIA MUNICIPAL</h3></div></div><div id="presidenciaEditor"></div></div>
+    <div class="section-card"><div class="section-title"><h3>DIPUTACIÓN FEDERAL</h3><div class="section-actions"><button class="button secondary smallbtn" data-manage-directory="FEDERAL">ADMINISTRAR DIRECTORIO</button><button class="button secondary smallbtn" data-add="diputacionesFederales">+ AGREGAR A FICHA</button></div></div><div id="diputacionesFederalesList" class="cards-list"></div></div>
+    <div class="section-card"><div class="section-title"><h3>DIPUTACIÓN LOCAL</h3><div class="section-actions"><button class="button secondary smallbtn" data-manage-directory="LOCAL">ADMINISTRAR DIRECTORIO</button><button class="button secondary smallbtn" data-add="diputacionesLocales">+ AGREGAR A FICHA</button></div></div><div id="diputacionesLocalesList" class="cards-list"></div></div>
+  </div>
+
+  <div class="tab-content" id="tab-influencia">
+    <div class="section-card"><div class="section-title"><h3>LÍDERES</h3><button class="button smallbtn" data-add="lideres">+ AGREGAR LÍDER</button></div><div id="lideresList" class="cards-list"></div></div>
+    <div class="section-card"><div class="section-title"><h3>GRUPO POLÍTICO DOMINANTE EN EL MUNICIPIO</h3></div>
+      <div class="group-editor">
+        <div class="photo-col"><div class="photo-box" id="grupoPhotoBox">IMAGEN</div><input id="grupoPhotoInput" type="file" accept="image/jpeg,image/png" hidden><button type="button" class="button secondary smallbtn" id="grupoPhotoPick">CARGAR IMAGEN</button><button type="button" class="button danger-outline smallbtn photoRemove" id="grupoPhotoRemove" disabled>QUITAR IMAGEN</button></div>
+        <label>GRUPO POLÍTICO<input id="grupoPolitico" class="input natural-text" placeholder="Grupo político"></label>
+      </div>
+    </div>
+    <div class="section-card"><div class="section-title"><div><h3>GRUPOS CON PRESENCIA EN EL MUNICIPIO</h3><small>REGISTRA EL ACTOR POLÍTICO, EL NOMBRE DEL GRUPO Y SU IMAGEN</small></div><button class="button smallbtn" data-add="grupos_presencia">+ AGREGAR GRUPO</button></div><div id="gruposPresenciaList" class="cards-list"></div></div>
+  </div>
+
+  <div class="tab-content" id="tab-aspirantes">
+    <div class="section-card"><div class="section-title"><h3>ACTORES POLÍTICOS CON ASPIRACIONES EN 2027</h3><button class="button smallbtn" data-add="aspirantes">+ AGREGAR ACTOR</button></div><div id="aspirantesList" class="cards-list"></div></div>
+  </div>
+
+  <div class="tab-content" id="tab-territorio">
+    <div class="section-card"><div class="section-title"><div><h3>PERSONAL EN TERRITORIO</h3><small>CATÁLOGO ADAPTABLE DE CARGOS / TIPOS</small></div><button class="button smallbtn" data-add="territorio">+ AGREGAR PERSONAL</button></div><div id="territorioList" class="cards-list"></div></div>
+    <div class="section-card"><div class="section-title"><div><h3>PERSONAL DE LA COORDINACIÓN</h3><small>REGISTRA CARGO, COORDINACIÓN, REGIÓN Y TELÉFONO DE CONTACTO</small></div><button class="button smallbtn" data-add="personal_coordinacion">+ AGREGAR PERSONAL</button></div><div id="personalCoordinacionList" class="cards-list"></div></div>
+  </div>
+
+  <div class="tab-content" id="tab-hoja2">
+    <div class="section-card"><div class="section-title"><div><h3>HOJA 2 Y ANEXOS</h3><small>PUEDES AGREGAR VARIOS JPG, PNG O PDF. LOS PDF CONSERVAN TODAS SUS PÁGINAS.</small></div></div>
+      <input id="hoja2Input" type="file" accept="image/jpeg,image/png,application/pdf" multiple hidden>
+      <div id="hoja2Dropzone" class="dropzone"><strong>ARRASTRA UNO O VARIOS ARCHIVOS AQUÍ</strong><span>O HAZ CLIC PARA SELECCIONAR JPG, PNG O PDF</span></div>
+      <div id="hoja2Info" class="attachments-list"></div>
+    </div>
+  </div>
+
+  <footer class="footerbar">
+    <span id="saveStatus">SIN CAMBIOS PENDIENTES</span>
+    <div class="footer-actions" aria-label="Acciones de la ficha">
+      <button class="button danger-outline capture-action" id="clearAll" type="button"><i class="bi bi-eraser" aria-hidden="true"></i><span>LIMPIAR CAPTURA</span></button>
+      <button class="button secondary capture-action" id="saveAll" type="button"><i class="bi bi-floppy" aria-hidden="true"></i><span>GUARDAR FICHA</span></button>
+      <button class="button secondary capture-action" id="generateExcel" type="button"><i class="bi bi-file-earmark-excel" aria-hidden="true"></i><span>DESCARGAR EXCEL</span></button>
+      <button class="button capture-action" id="generatePdf" type="button"><i class="bi bi-file-earmark-pdf" aria-hidden="true"></i><span>GENERAR PDF</span></button>
+    </div>
+  </footer>
+</section>
+
+<aside class="preview-panel">
+  <div class="preview-panel-head"><div><div class="eyebrow">VISTA PREVIA</div><h2>HOJA 1</h2></div><button class="preview-toggle" id="togglePreview" type="button" aria-pressed="false" title="Ocultar vista previa"><i class="bi bi-eye-slash" aria-hidden="true"></i><span>OCULTAR VISTA</span></button></div>
+  <div class="preview-note" id="previewNote">SELECCIONA UN MUNICIPIO. LA VISTA SE ACTUALIZA AL GUARDAR.</div>
+  <div class="paper"><iframe id="pdfPreview" title="Vista previa exacta de la hoja 1"></iframe></div>
+</aside>
+<button class="preview-restore hidden" id="showPreviewTab" type="button" title="Mostrar vista previa"><i class="bi bi-eye" aria-hidden="true"></i><span>MOSTRAR VISTA</span></button>
+</main>
+
+<div id="modalBackdrop" class="modal-backdrop hidden">
+ <div class="modal">
+  <div class="modal-head"><div><div class="eyebrow">CAPTURA DE PERSONA</div><h2 id="modalTitle">REGISTRO</h2></div><button id="modalClose">×</button></div>
+  <div id="modalForm"></div>
+  <div class="modal-actions"><button class="button secondary" id="modalCancel">CANCELAR</button><button class="button" id="modalSave">GUARDAR REGISTRO</button></div>
+ </div>
+</div>
+
+<div id="directoryBackdrop" class="modal-backdrop hidden">
+ <div class="modal directory-modal">
+  <div class="modal-head"><div><div class="eyebrow">ALTAS, CAMBIOS Y BAJAS</div><h2 id="directoryTitle">DIRECTORIO DE DIPUTACIONES</h2></div><button id="directoryClose">×</button></div>
+  <form id="directoryForm" class="directory-form">
+   <input id="directoryRecordId" type="hidden">
+   <label>NOMBRE COMPLETO<input id="directoryName" class="input person-name" autocomplete="off" placeholder="Nombre completo" required></label>
+   <label>DISTRITO<input id="directoryDistrict" class="input upper" autocomplete="off" placeholder="Ej. DTTO 17 ECATEPEC" required></label>
+   <div class="directory-form-actions"><button type="button" class="button secondary smallbtn hidden" id="directoryCancelEdit">CANCELAR EDICIÓN</button><button type="submit" class="button smallbtn" id="directorySave">DAR DE ALTA</button></div>
+  </form>
+  <div class="directory-list-head"><strong>REGISTROS ACTIVOS</strong><span id="directoryCount">0</span></div>
+  <div id="directoryList" class="directory-list"></div>
+ </div>
+</div>
+
+<div id="captureActorBackdrop" class="capture-actor-backdrop hidden">
+ <section class="capture-actor-viewer" role="dialog" aria-modal="true" aria-labelledby="captureActorTitle">
+  <header>
+   <div class="capture-actor-brand"><span><i class="bi bi-person-vcard"></i></span><div><small>SISTEMA DE ACTORES POLÍTICOS</small><h2 id="captureActorTitle">Expediente</h2><p id="captureActorMeta"></p></div></div>
+   <div class="capture-actor-actions"><button id="captureActorRelink" class="button secondary" type="button"><i class="bi bi-arrow-repeat"></i> CAMBIAR ENLACE</button><a id="captureActorOpen" class="button secondary" href="#" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> ABRIR PDF</a><button id="captureActorLogout" class="button actor-logout" type="button"><i class="bi bi-box-arrow-right"></i> CERRAR SESIÓN</button><button id="captureActorClose" class="capture-actor-close" type="button" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button></div>
+  </header>
+  <div id="captureActorLoading" class="capture-actor-loading"><span class="spinner"></span> Solicitando expediente autorizado…</div>
+  <iframe id="captureActorPdf" title="Expediente del Sistema de Actores Políticos"></iframe>
+ </section>
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script><script src="/js/core/api.js"></script><script src="/js/core/name-dictionary.js"></script><script src="/js/core/actors-turnstile.js?v=20260908-1"></script><script src="/js/captura/actores.js?v=20260908-turnstile-1"></script><script src="/js/captura/index.js?v=20260929-personal-coordinacion-1"></script>
+</body></html>

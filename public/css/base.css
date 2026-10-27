@@ -1,0 +1,60 @@
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --text: #20242a;
+  --muted: #68707c;
+  --border: #d9dee7;
+  --primary: #3f4856;
+  --soft: #f6f7f9;
+  --radius: 12px;
+}
+
+
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button, input, select, textarea { font: inherit; }
+
+.input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.upper { text-transform: uppercase; }
+
+.button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.button.secondary {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.button.danger-outline {
+  background: #fff;
+  color: #9f123f;
+  border: 1px solid #9f123f;
+}

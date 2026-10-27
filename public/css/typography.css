@@ -1,0 +1,13 @@
+:root {
+  --system-font: "Montserrat", "Segoe UI", Arial, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--system-font);
+  font-weight: 300;
+}
+
+body *:not(.bi) {
+  font-family: inherit;
+}

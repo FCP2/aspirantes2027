@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="actors-turnstile-site-key" content="<%= actorsTurnstileSiteKey %>">
+<title>Reportes cartográficos · Fichas municipales</title>
+<link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="/vendor/sweetalert2/sweetalert2.min.css"><link rel="stylesheet" href="/vendor/leaflet/leaflet.css"><link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/reportes-mapa.css?v=20260930-subreference-report-3"><link rel="stylesheet" href="/css/app-header.css?v=20260918-3"><link rel="stylesheet" href="/css/reference-sublayers.css?v=20260923-1"><link rel="stylesheet" href="/css/reference-leader-lines.css?v=20260918-1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/typography.css?v=20260918-1"><link rel="stylesheet" href="/css/history.css?v=20260922-1">
+</head>
+<body>
+<header class="map-topbar"><div class="map-brand"><span class="map-brandmark"><i class="bi bi-map-fill"></i></span><div><strong>Reportes cartográficos</strong></div></div><nav class="map-nav"><span class="readonly-chip"><i class="bi bi-database-lock"></i> SÓLO LECTURA</span><a class="button secondary" href="/revision-fuentes"><i class="bi bi-stars"></i> REVISIÓN</a><a class="button secondary" href="/captura"><i class="bi bi-pencil-square"></i> CAPTURA</a></nav></header>
+<main class="map-layout">
+<aside class="report-sidebar">
+<section class="report-intro">
+  <span class="section-kicker">TIPO DE REPORTE</span>
+  <div class="report-selector-wrap">
+    <button id="reportSelector" class="report-selector" type="button" aria-haspopup="listbox" aria-expanded="false">
+      <span class="selector-left">
+        <span class="icon-wrapper"><i id="reportSelectorIcon" class="bi bi-file-earmark-person-fill"></i></span>
+        <span class="selector-text">
+          <small class="selector-badge">REPORTE ACTIVO</small>
+          <strong id="reportSelectorTitle" class="selector-title">Ficha municipal</strong>
+        </span>
+      </span>
+      <i class="bi bi-chevron-down arrow-icon"></i>
+    </button>
+    <div id="reportMenu" class="report-menu hidden" role="listbox">
+      <button type="button" data-report-mode="fichas"><i class="bi bi-file-earmark-person-fill"></i><span><strong>Ficha municipal</strong><small>Consulta la captura completa</small></span></button>
+      <button type="button" data-report-mode="referentes"><i class="bi bi-diagram-3-fill"></i><span><strong>Referentes</strong><small>Presidencias y diputaciones</small></span></button>
+      <button type="button" data-report-mode="partidos"><i class="bi bi-pie-chart-fill"></i><span><strong>Partido Político</strong><small>Partido gobernante por municipio</small></span></button>
+      <button type="button" data-report-mode="aspirantes"><i class="bi bi-people-fill"></i><span><strong>Aspirantes 2027</strong><small>Reporte individual o general</small></span></button>
+      <button type="button" data-report-mode="historial"><i class="bi bi-clock-history"></i><span><strong>Historial</strong><small>Evolución de Presidencias Municipales</small></span></button>
+    </div>
+  </div>
+  <p id="reportInstruction" class="section-instruction">Selecciona un polígono o municipio para consultar su ficha capturada.</p>
+</section>
+<section id="historyFilters" class="report-filters hidden">
+  <label class="status-filter history-period-filter"><span>PERIODOS</span><select id="historyPeriod" class="input history-combo" multiple size="1"></select></label>
+  <label class="status-filter history-reference-filter"><span>REFERENTES</span><select id="historyReference" class="input history-combo" multiple size="1"></select></label>
+  <div id="historyTimeline" class="history-timeline"></div>
+  <div id="historyReferenceCounters" class="history-reference-counters"></div>
+  <button id="openHistoryReferenceCards" class="history-floating-button hidden" type="button"><i class="bi bi-bar-chart-fill"></i><span>INDICADORES POR REFERENTE</span></button>
+</section>
+  <section class="stat-deck"><article class="stat-card stat-total"><span class="stat-icon"><i id="totalIcon" class="bi bi-geo-alt-fill"></i></span><div class="stat-copy"><small id="totalLabel">UNIVERSO CARTOGRÁFICO</small><span id="totalCaption">Municipios disponibles</span></div><strong class="flip-value" id="totalMunicipios">—</strong></article><div class="stat-pair"><article class="stat-card stat-available"><div class="stat-card-head"><span class="stat-dot"></span><small id="availableLabel">CON INFORMACIÓN</small></div><strong class="flip-value" id="totalConInformacion">—</strong><span class="stat-caption" id="coverageAvailable">Cobertura —</span><span class="stat-progress"><i id="coverageAvailableBar"></i></span></article><article class="stat-card stat-pending"><div class="stat-card-head"><span class="stat-dot"></span><small id="pendingLabel">SIN CAPTURA</small></div><strong class="flip-value" id="totalPendientes">—</strong><span class="stat-caption" id="coveragePending">Pendiente —</span><span class="stat-progress"><i id="coveragePendingBar"></i></span></article></div></section>
+  <section id="municipalityFilters" class="report-filters"><label class="map-search"><i class="bi bi-search"></i><input id="municipioSearchMap" type="search" placeholder="Buscar municipio"></label><label class="status-filter"><span>ESTADO DE LA FICHA</span><select id="mapStatusFilter" class="input"><option value="all">TODOS</option><option value="available">CON INFORMACIÓN</option><option value="pending">SIN CAPTURA</option></select></label></section>
+<section id="referenceFilters" class="report-filters hidden"><label class="status-filter"><span>TIPO DE VINCULACIÓN</span><select id="referenceScope" class="input"><option value="presidencias">PRESIDENCIAS MUNICIPALES</option><option value="locales">DIPUTACIONES LOCALES</option><option value="federales">DIPUTACIONES FEDERALES</option></select></label><label class="map-search"><i class="bi bi-search"></i><input id="referenceSearch" type="search" placeholder="Buscar referente"></label><label class="status-filter"><span>HOMOLOGACIÓN</span><select id="referenceStatusFilter" class="input"><option value="all">TODOS</option><option value="clean">HOMOLOGADOS</option><option value="review">REQUIEREN REVISIÓN</option></select></label></section>
+<section id="partyFilters" class="report-filters hidden"><button id="openPartyGeneralReport" class="button party-general-report" type="button"><i class="bi bi-file-earmark-pdf-fill"></i><span><strong>PDF GENERAL DE PARTIDOS</strong><small>Mapa y directorio municipal</small></span></button><label class="map-search"><i class="bi bi-search"></i><input id="partySearch" type="search" placeholder="Buscar partido político"></label></section>
+<section id="aspirantFilters" class="report-filters hidden">
+  <button id="openAspirantGeneralReport" class="button party-general-report" type="button">
+    <i class="bi bi-file-earmark-pdf-fill"></i>
+    <span><strong>REPORTE GENERAL</strong><small>Todos los municipios y aspirantes</small></span>
+  </button>
+  <div class="aspirant-report-tabs" role="tablist" aria-label="Filtros de aspirantes">
+    <button type="button" class="active" id="aspirantGeneralTab" role="tab" aria-selected="true" aria-controls="aspirantGeneralPanel">
+      <i class="bi bi-file-earmark-bar-graph"></i> POR MUNICIPIO
+    </button>
+    <button type="button" id="aspirantSubreferenceTab" role="tab" aria-selected="false" aria-controls="aspirantSubreferencePanel">
+      <i class="bi bi-person-lines-fill"></i> POR SUBREFERENTE
+    </button>
+  </div>
+  <div id="aspirantGeneralPanel" class="aspirant-tab-panel" role="tabpanel" aria-labelledby="aspirantGeneralTab">
+  <label class="status-filter aspirant-filter-row">
+    <span>INFORMACIÓN A MOSTRAR</span>
+    <select id="aspirantScope" class="input">
+      <option value="referente">ASPIRANTE + REFERENTE</option>
+      <option value="subreferente">ASPIRANTE + SUBREFERENTE</option>
+      <option value="ambos" selected>ASPIRANTE + REFERENTE Y SUBREFERENTE</option>
+    </select>
+  </label>
+  <label class="status-filter aspirant-filter-row">
+    <span>MUNICIPIO PARA REPORTE INDIVIDUAL</span>
+    <select id="aspirantMunicipality" class="input">
+      <option value="">SELECCIONA UN MUNICIPIO</option>
+    </select>
+  </label>
+  <label class="map-search"><i class="bi bi-search"></i><input id="aspirantSearch" type="search" placeholder="Buscar municipio"></label>
+  </div>
+  <div id="aspirantSubreferencePanel" class="aspirant-tab-panel hidden" role="tabpanel" aria-labelledby="aspirantSubreferenceTab">
+    <label class="map-search"><i class="bi bi-search"></i><input id="subreferenceSearch" type="search" placeholder="Buscar subreferente"></label>
+    <button type="button" id="clearSubreferenceSelection" class="subreference-clear-button"><i class="bi bi-eraser"></i> LIMPIAR SELECCIÓN</button>
+    <button type="button" id="openSubreferenceAspirantReport" class="button party-general-report subreference-report-button hidden">
+      <i class="bi bi-file-earmark-bar-graph-fill"></i>
+      <span><strong>VISTA PREVIA DEL SUBREFERENTE</strong><small>Todos sus aspirantes en un reporte</small></span>
+    </button>
+  </div>
+</section>
+  <div id="referenceViewSelector" class="reference-view-selector hidden" role="group" aria-label="Vista de referentes">
+    <div class="reference-view-options">
+      <button type="button" data-reference-view="referente" class="active"><i class="bi bi-person-badge" aria-hidden="true"></i> POR REFERENTE</button>
+      <button type="button" data-reference-view="capas"><i class="bi bi-layers" aria-hidden="true"></i> POR CAPAS</button>
+    </div>
+    <span id="selectedReferenceCount">0 seleccionados</span>
+    <button type="button" id="toggleReferenceLabels" class="reference-label-toggle hidden" aria-pressed="true">
+      <i class="bi bi-eye-slash" aria-hidden="true"></i><span>OCULTAR ETIQUETAS</span>
+    </button>
+  </div>
+  <section id="municipalityListPanel"><div class="municipality-list-head"><strong id="listHeading">MUNICIPIOS</strong><span id="visibleMunicipios">0</span></div><div id="mapMunicipalityList" class="map-municipality-list"><div class="list-loading"><span class="map-spinner"></span> Preparando cartografía…</div></div></section>
+</aside>
+<section class="map-stage"><header class="map-stage-head"><div><span class="section-kicker">ESTADO DE MÉXICO</span><h1 id="mapStageTitle">Consulta territorial de fichas</h1><p id="mapStageDescription">Los municipios en guinda cuentan con información capturada.</p></div><div class="map-stage-actions"><button id="openReferenceReport" class="button reference-report-action hidden" type="button"><i class="bi bi-file-earmark-pdf-fill"></i> VER REPORTE</button><button id="resetMap" class="button secondary" type="button"><i class="bi bi-arrows-fullscreen"></i> VISTA GENERAL</button></div></header><div class="map-canvas-wrap"><div id="map" data-map-theme="light"></div><div id="mapReferencePhoto" class="map-reference-photo hidden" aria-hidden="true"></div><div id="mapLoading" class="map-loading"><span class="map-spinner large"></span><strong>Cargando polígonos municipales</strong><small>Este proceso puede tomar unos segundos.</small></div><div class="map-guidance"><i class="bi bi-cursor-fill"></i><span id="mapGuidance"><strong>Consulta directa</strong> Haz clic sobre cualquier municipio.</span></div></div></section>
+</main>
+<div id="municipalReportBackdrop" class="municipal-report-backdrop hidden"><section class="municipal-report-modal" role="dialog" aria-modal="true"><header class="municipal-report-header"><div class="report-title-group"><span class="report-seal"><i id="reportModalIcon" class="bi bi-building-fill"></i></span><div><small id="reportModalKicker">FICHA MUNICIPAL · CONSULTA CARTOGRÁFICA</small><h2 id="municipalReportTitle">Municipio</h2><p id="municipalReportMeta"></p></div></div><div class="report-modal-actions"><a id="downloadMunicipalPdf" class="button report-download" href="#"><i class="bi bi-file-earmark-arrow-down"></i> DESCARGAR PDF</a><button id="closeMunicipalReport" class="report-close" type="button"><i class="bi bi-x-lg"></i></button></div></header><div id="reportSummaryBar" class="report-summary-bar"><div><small>ÚLTIMA ACTUALIZACIÓN</small><strong id="reportUpdated">—</strong></div><div><small>REVISIÓN</small><strong id="reportRevision">—</strong></div><div><small>ASPIRANTES 2027</small><strong id="reportAspirants">—</strong></div><div><small>PERSONAL EN TERRITORIO</small><strong id="reportTerritory">—</strong></div></div><div class="report-preview-area"><div id="reportPreviewLoading" class="report-preview-loading"><span class="map-spinner large"></span><strong>Preparando reporte…</strong></div><iframe id="municipalReportFrame" title="Vista del reporte"></iframe></div></section></div>
+<div id="captureActorBackdrop" class="capture-actor-backdrop hidden">
+  <section class="capture-actor-viewer" role="dialog" aria-modal="true" aria-labelledby="captureActorTitle">
+    <header>
+      <div class="capture-actor-brand"><span><i class="bi bi-person-vcard"></i></span><div><small>SISTEMA DE ACTORES POLÍTICOS</small><h2 id="captureActorTitle">Expediente</h2><p id="captureActorMeta"></p></div></div>
+      <div class="capture-actor-actions"><button id="captureActorRelink" class="button secondary" type="button"><i class="bi bi-arrow-repeat"></i> CAMBIAR ENLACE</button><a id="captureActorOpen" class="button secondary" href="#" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> ABRIR PDF</a><button id="captureActorLogout" class="button actor-logout" type="button"><i class="bi bi-box-arrow-right"></i> CERRAR SESIÓN</button><button id="captureActorClose" class="capture-actor-close" type="button" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button></div>
+    </header>
+    <div id="captureActorLoading" class="capture-actor-loading"><span class="spinner"></span> Solicitando expediente autorizado…</div>
+    <iframe id="captureActorPdf" title="Expediente del Sistema de Actores Políticos"></iframe>
+  </section>
+</div>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script><script src="/vendor/leaflet/leaflet.js"></script><script src="/vendor/wellknown/wellknown.js"></script><script src="/js/core/api.js"></script><script src="/js/core/actors-turnstile.js?v=20260908-1"></script><script src="/js/captura/actores.js?v=20260929-reportes-modal-1"></script><script src="/js/map.js?v=20260930-subreference-layer-1"></script><script src="/js/reportes/mapa.js?v=20260930-subreference-report-2"></script>
+<div id="historyKpis" class="history-kpis hidden"><div><small>PERIODOS</small><strong id="historyKpiPeriods">0</strong></div><div><small>MUNICIPIOS</small><strong id="historyKpiMunicipalities">0</strong></div><div class="history-bars" id="historyBars"></div></div>
+</body></html>

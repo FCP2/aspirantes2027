@@ -1,0 +1,159 @@
+.report-sidebar #referenceViewSelector {
+  order: 1;
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px 8px;
+  margin-top: 8px;
+  padding: 3px;
+  border: 1px solid #eadfce;
+  border-radius: 8px;
+  background: #fcfaf7;
+}
+
+.reference-view-options {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 4px;
+}
+
+#referenceViewSelector [data-reference-view] {
+  min-height: 29px;
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #66717d;
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .035em;
+  cursor: pointer;
+}
+
+#referenceViewSelector [data-reference-view].active {
+  color: #fff;
+  background: #86163b;
+  box-shadow: 0 2px 5px rgba(74, 16, 38, .18);
+}
+
+#referenceViewSelector [data-reference-view] i {
+  font-size: 11px;
+}
+
+#selectedReferenceCount {
+  flex: 0 0 auto;
+  max-width: 66px;
+  padding: 4px 5px;
+  border-radius: 999px;
+  color: #741333;
+  background: #f2e6e9;
+  font-size: 6px;
+  font-weight: 800;
+  text-align: center;
+}
+
+#toggleReferenceLabels {
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 7px;
+  border: 1px solid #d9c9a6;
+  border-radius: 6px;
+  color: #741333;
+  background: #fff;
+  font-size: 6px;
+  font-weight: 850;
+  letter-spacing: .025em;
+  cursor: pointer;
+}
+
+#toggleReferenceLabels:hover {
+  border-color: #b89451;
+  background: #f6f0e7;
+}
+
+#toggleReferenceLabels i {
+  font-size: 11px;
+}
+
+.reference-layer-option {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 14px 11px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.reference-layer-option:hover {
+  border-color: #eadfce;
+  background: #fcfaf7;
+}
+
+.reference-layer-option input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #86163b;
+}
+
+.reference-color-swatch {
+  width: 11px;
+  height: 11px;
+  border: 1px solid rgba(0, 0, 0, .12);
+  border-radius: 3px;
+  background: var(--reference-color);
+}
+
+.reference-layer-option .municipality-copy strong {
+  font-size: 8px;
+}
+
+.reference-layer-option .municipality-copy small {
+  font-size: 6px;
+}
+
+.reference-layer-option .municipality-state {
+  width: 25px;
+  height: 23px;
+  color: #7d8792;
+  font-size: 7px;
+  font-weight: 750;
+}
+
+.report-sidebar .municipality-list-head {
+  order: 2;
+}
+
+.report-sidebar #municipalityListPanel {
+  order: 2;
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-sidebar .map-municipality-list {
+  order: 3;
+  flex: 1 1 auto;
+}
+
+@media (max-width: 900px) {
+  #referenceViewSelector [data-reference-view] {
+    min-height: 32px;
+  }
+}

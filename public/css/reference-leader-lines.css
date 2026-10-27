@@ -1,0 +1,30 @@
+.municipality-leader-label-wrap {
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.municipality-leader-label {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 3px 5px;
+  border: 1px solid var(--leader-color);
+  border-radius: 5px;
+  color: #29323c;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 2px 7px rgba(30, 41, 53, .2);
+  font: 700 8px/1.1 "Segoe UI", Arial, sans-serif;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.municipality-leader-line {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

@@ -1,0 +1,176 @@
+/* Encabezado compartido de Captura y Reportes. Mantener el alcance aquí. */
+.edomex-header,
+.map-topbar {
+  box-sizing: border-box;
+  min-height: 60px;
+  height: auto;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #fff;
+  background: #86163b;
+  border-bottom: 3px solid #c7a45e;
+  box-shadow: 0 4px 14px rgba(34, 16, 24, .16);
+  position: relative;
+  z-index: 1001;
+}
+
+.edomex-brand-container,
+.map-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.edomex-title-group,
+.map-brand > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.edomex-platform-title,
+.map-brand strong {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: .015em;
+}
+
+.edomex-office-subtext,
+.map-brand small {
+  color: rgba(255, 255, 255, .78);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.map-brandmark {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .6);
+  border-radius: 11px;
+  color: #86163b;
+  background: #fff;
+  font-size: 18px;
+  box-shadow: none;
+}
+
+.edomex-actions-nav,
+.map-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.edomex-header .edomex-btn,
+.map-topbar .map-nav .button,
+.map-topbar .readonly-chip {
+  box-sizing: border-box;
+  min-width: 102px;
+  height: 30px;
+  margin: 0;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, .82);
+  border-radius: 8px;
+  color: #741333;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(28, 12, 20, .12);
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .035em;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+
+.edomex-header .edomex-btn i,
+.map-topbar .map-nav .button i,
+.map-topbar .readonly-chip i {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.edomex-header .edomex-btn:hover,
+.map-topbar .map-nav .button:hover {
+  color: #741333;
+  background: #f6f0e7;
+  border-color: #e1c98f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 9px rgba(28, 12, 20, .18);
+}
+
+.edomex-header .edomex-btn:focus-visible,
+.map-topbar .map-nav .button:focus-visible {
+  outline: 3px solid #e4c778;
+  outline-offset: 2px;
+}
+
+.edomex-header .edomex-btn-danger {
+  color: #9b2837;
+}
+
+.map-topbar .readonly-chip {
+  border-left: 1px solid rgba(255, 255, 255, .82);
+  letter-spacing: .035em;
+}
+
+@media (max-width: 900px) {
+  .edomex-header,
+  .map-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .edomex-actions-nav,
+  .map-nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .map-topbar .readonly-chip,
+  .map-topbar .map-nav .button {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 560px) {
+  .edomex-header .edomex-btn,
+  .map-topbar .map-nav .button,
+  .map-topbar .readonly-chip {
+    min-width: 0;
+    flex: 1 1 calc(50% - 9px);
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .edomex-actions-nav,
+  .map-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* El visor del clip queda sobre el header de la app y bajo los SweetAlert. */
+.capture-actor-backdrop {
+  z-index: 1050;
+}

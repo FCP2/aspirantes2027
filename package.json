@@ -1,0 +1,38 @@
+{
+  "name": "sistema-fichas-municipales",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Captura local de fichas municipales con SQLite nativo de Node.js, auditoría, adjuntos y exportación.",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "db:init": "node src/database/init.js",
+    "db:reset": "node src/database/reset.js",
+    "directorio:diputaciones": "node tools/directorios/importar-diputaciones.js",
+    "cruce:actores": "node tools/cruce-actores/index.js",
+    "reporte:expedientes": "node tools/reportes/expedientes-faltantes.js",
+    "historial:importar": "node tools/historial/importar-presidencias.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bootstrap-icons": "^1.13.1",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "leaflet": "^1.9.4",
+    "multer": "^2.0.2",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.16.3",
+    "puppeteer": "^24.16.0",
+    "sharp": "^0.35.3",
+    "sweetalert2": "^11.26.25",
+    "uuid": "^11.0.5",
+    "wellknown": "^0.5.0"
+  }
+}

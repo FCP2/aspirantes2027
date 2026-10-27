@@ -1,0 +1,22 @@
+node_modules/
+.env
+**/.env
+**/.env.*
+!**/.env.example
+
+# Datos capturados y respaldos: se transfieren por separado, nunca por GitHub.
+/data/
+/storage/
+/output/
+/tmp/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+
+tools/cruce-actores/salidas/*.xlsx
+!tools/cruce-actores/salidas/.gitkeep
+tools/revision-fuentes/entradas/*.html
+tools/revision-fuentes/entradas/*.htm
+!tools/revision-fuentes/entradas/.gitkeep
+!tools/integracion-actores/data/.gitkeep

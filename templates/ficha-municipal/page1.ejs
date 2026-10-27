@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<style>
+@page { size: A4 portrait; margin: 0; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f2ec;color:#111}
+.page{width:210mm;height:297mm;padding:8mm 8mm 7mm;position:relative;overflow:hidden;background:#f5f2ec}
+.page:not(:last-child){break-after:page;page-break-after:always}
+.municipio{width:max-content;max-width:78%;margin:-8mm auto 3mm;background:#9f123f;color:white;padding:3.5mm 12mm 2.6mm;border-radius:0 0 3mm 3mm;font-size:17pt;font-weight:700;text-align:center}
+.band{background:#c9c5c4;text-align:center;font-weight:700;font-size:10pt;height:5mm;line-height:5mm;margin:2mm auto;width:72%}.influence-band{width:100%!important;height:8mm!important;min-height:8mm;line-height:3mm!important;padding:1mm 1.5mm;font-size:7pt!important;box-sizing:border-box;overflow:visible}
+.green{background:#003b34;color:white;height:5mm;line-height:5mm;text-align:center;font-size:9pt}
+.maroon{background:#a61d4b;color:white;height:6mm;line-height:6mm;text-align:center;font-size:9pt}
+.box{background:#eee;min-height:25mm;margin-bottom:3mm}
+.person-main{display:grid;grid-template-columns:24mm 1fr 1.15fr;gap:4mm;align-items:center;padding:2mm 4mm}
+.photo{width:18mm;height:20mm;object-fit:cover;border:1px solid #111;border-radius:2.5mm;background:#992c27}
+.photo.circle{border-radius:50%;width:15mm;height:15mm}
+.name{text-align:center;font-size:9pt}
+.party{text-align:center;font-size:7.5pt;margin-top:1mm}
+.district{text-align:center;font-size:7pt;font-weight:700;margin-top:.8mm}
+.refgrid{font-size:7.7pt}
+.refrow{display:grid;grid-template-columns:1fr 24mm;border-bottom:1px solid #aaa;padding:1mm 0}
+.refrow.hl{background:#dcebd5}
+.refrow.hl.no{background:#f4a261;color:#6b1d0b;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:3mm}.two>div{display:grid;grid-template-rows:6mm 1fr;min-width:0}
+.two.single{grid-template-columns:1fr}
+.influence{background:#eee;min-height:31mm;padding:2mm 4mm;display:flex;align-items:center;justify-content:center;gap:6mm;font-size:8pt;text-align:center}
+.political-groups{display:grid;align-content:center;gap:1.2mm;padding:2mm 3mm}
+.dominant-group{display:flex;align-items:center;justify-content:center;gap:3mm;min-height:11mm}
+.dominant-group .photo{width:11mm;height:12mm;object-fit:contain;object-position:center;padding:.45mm;background:#f8f5ef}
+.presence-title{font-size:6.5pt;font-weight:700;color:#8f153f;border-top:1px solid #bbb;padding-top:1mm}
+.presence-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2mm}
+.presence-item{display:grid;grid-template-columns:9mm 1fr;gap:1.5mm;align-items:center;min-width:0;text-align:left;font-size:6.4pt}
+.presence-item .photo{width:9mm;height:9mm;object-fit:contain;object-position:center;padding:.4mm;background:#f8f5ef}.presence-item strong,.presence-item span{display:block;overflow-wrap:anywhere}.presence-item span{font-size:6pt;color:#444;margin-top:.5mm}
+.presence-page{background:#eee;padding:3mm;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2mm}
+.leaders-influence,.leaders-page-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2mm;align-content:center}
+.leader-item{display:grid;grid-template-columns:15mm 1fr;gap:2mm;align-items:center;min-width:0;font-size:6.8pt;text-align:left}
+.leader-item .photo{width:15mm;height:17mm}.leader-item div{overflow-wrap:anywhere}.leader-reference{margin-top:1mm;font-size:6pt;color:#444}.leader-reference strong,.leader-reference span{display:block}.leader-reference strong{font-size:5.8pt;color:#8f153f}
+.leaders-page-grid{background:#eee;padding:4mm;grid-auto-rows:minmax(19mm,auto)}
+.asp-box{background:#eee;padding:2mm 3mm;min-height:65mm}
+.asp-box.compact{min-height:48mm}
+.asp-box.continued{min-height:0}
+.asp-header{display:grid;grid-template-columns:17mm 1fr 1fr;text-align:center;font-weight:700;font-size:7.5pt;margin-bottom:1mm}
+.asp-row{display:grid;grid-template-columns:17mm 1fr 1fr;align-items:center;min-height:11mm;font-size:7.4pt}
+.has-subreference .asp-header,.has-subreference .asp-row{grid-template-columns:17mm 1fr 1fr 1fr}
+.asp-row .party{font-size:7pt}
+.territorio{margin-top:3mm}
+.territorio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm}
+.coordination-page-title{margin:0 auto 4mm;background:#003b34;color:#fff;padding:2.2mm 4mm;text-align:center;font-size:10pt;letter-spacing:.3pt}
+.coordination-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(32mm,auto);gap:2.5mm}
+.coordination-card{display:grid;grid-template-columns:19mm minmax(0,1fr);gap:2.5mm;align-items:center;min-width:0;padding:2.5mm 3mm;background:#eee;border-top:1.5mm solid #a61d4b}
+.coordination-card .photo{width:18mm;height:21mm;object-fit:cover}
+.coordination-copy{min-width:0;overflow-wrap:anywhere;font-size:7.5pt;line-height:1.25}
+.coordination-copy strong{display:block;font-size:8.5pt;color:#1e293b;margin-bottom:1mm}
+.coordination-copy span{display:block;margin-top:.7mm}
+.coordination-copy b{color:#8f153f}
+.terr-item{display:grid;grid-template-columns:18mm minmax(0,1fr);gap:2.5mm;align-items:center;min-height:21mm;font-size:6.3pt;line-height:1.22}
+.terr-item .photo{width:18mm;height:20mm}
+.terr-item>div{min-width:0;overflow-wrap:anywhere}
+.terr-item strong{display:block;margin-top:.8mm;font-size:6.4pt;color:#8f153f}
+.dominant-terminal{margin-top:3mm}
+.dominant-terminal-box{min-height:18mm;background:#eee;display:flex;align-items:center;justify-content:center;gap:4mm;padding:2.5mm 5mm;text-align:center;font-size:8.5pt}
+.dominant-terminal-box .photo{width:14mm;height:15mm}
+.presence-terminal{margin-top:3mm}.presence-terminal-box{min-height:18mm;background:#eee;padding:3mm 4mm}.presence-terminal-box .presence-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:2mm 4mm}.presence-terminal-box .presence-item{grid-template-columns:12mm minmax(0,1fr);font-size:7pt}.presence-terminal-box .presence-item .photo{width:12mm;height:13mm}
+.page-no{position:absolute;right:5mm;bottom:0;background:#99322e;color:white;padding:5mm 3mm 2mm;border-radius:2mm 2mm 0 0;font-size:8pt}
+.updated-label{position:absolute;left:5mm;bottom:1.5mm;background:rgba(255,255,255,.92);color:#626971;padding:1.2mm 2mm;font-size:6.3pt;font-weight:700}
+.pdf-numbering-external .page-no{display:none}
+.pdf-numbering-external .updated-label{display:none}
+.small{font-size:7pt}.center{text-align:center}
+@media screen{
+  html{overflow:auto;background:#dfe4e8}
+  body{width:210mm;margin:0 auto;background:transparent}
+  .page{margin:0 auto 12px;box-shadow:0 5px 20px rgba(35,43,52,.18)}
+}
+@media print{html,body{width:auto;margin:0}.page{margin:0;box-shadow:none}}
+</style>
+</head>
+<body class="<%= showPageNumbers?'':'pdf-numbering-external' %> <%= ficha.aspirantes.some(actor => String(actor.subreferente || actor.subreferente_texto || '').trim())?'has-subreference':'' %>">
+<%
+  const limiteLideresPrimeraPagina = 6;
+  const mostrarSubreferente = ficha.aspirantes.some(actor => String(actor.subreferente || actor.subreferente_texto || '').trim());
+  const diputacionesFederales = ficha.diputacionesFederales || (ficha.diputacionFederal ? [ficha.diputacionFederal] : []);
+  const diputacionesLocales = ficha.diputacionesLocales || (ficha.diputacionLocal ? [ficha.diputacionLocal] : []);
+  const todasDiputaciones = [
+    ...diputacionesFederales.map(actor=>({...actor,tipo_label:'DIPUTACIÓN FEDERAL'})),
+    ...diputacionesLocales.map(actor=>({...actor,tipo_label:'DIPUTACIÓN LOCAL'}))
+  ];
+  const gruposPresencia = ficha.grupos_presencia || [];
+  const personalCoordinacion = ficha.personal_coordinacion || [];
+  const personalCoordinacionPages = [];
+  for (let index=0; index<personalCoordinacion.length; index+=12) {
+    personalCoordinacionPages.push(personalCoordinacion.slice(index,index+12));
+  }
+  const firstDiputaciones = todasDiputaciones.slice(0,8);
+  const diputacionesRestantes = todasDiputaciones.slice(8);
+  const funcionesEmpujanInfluencia = todasDiputaciones.length > 6 || (todasDiputaciones.length > 4 && ficha.lideres.length > 2);
+  const funcionesEmpujanAspirantes = todasDiputaciones.length > 4 || (todasDiputaciones.length > 2 && ficha.lideres.length > 4);
+  const firstLideres = funcionesEmpujanInfluencia ? [] : ficha.lideres.slice(0,limiteLideresPrimeraPagina);
+  const lideresInicioContinuacion = funcionesEmpujanInfluencia ? 0 : firstLideres.length;
+  const influenciaRequiereContinuacion = funcionesEmpujanInfluencia || lideresInicioContinuacion < ficha.lideres.length;
+  const contenidoRequiereContinuacion = funcionesEmpujanAspirantes || influenciaRequiereContinuacion;
+  const limiteAspirantesPrimeraPagina = todasDiputaciones.length >= 4 && ficha.lideres.length >= 3 ? 2 : 3;
+  const firstAspirantes = contenidoRequiereContinuacion ? [] : ficha.aspirantes.slice(0,limiteAspirantesPrimeraPagina);
+  const aspirantesRestantes = contenidoRequiereContinuacion ? ficha.aspirantes : ficha.aspirantes.slice(limiteAspirantesPrimeraPagina);
+  const hayContinuacionAspirantes = aspirantesRestantes.length > 0;
+  const territorioEnPrimera = !contenidoRequiereContinuacion && !hayContinuacionAspirantes && ficha.lideres.length <= 2 && todasDiputaciones.length <= 2;
+  const firstTerritorio = territorioEnPrimera ? ficha.territorio.slice(0,3) : [];
+  const continuationPages = [];
+
+  for (let index=0; index<diputacionesRestantes.length; index+=8) {
+    continuationPages.push({diputaciones:diputacionesRestantes.slice(index,index+8),lideres:[],gruposPresencia:[],mostrarGrupoDominante:false,influenciaDosColumnas:false,aspirantes:[],territorio:[]});
+  }
+
+  let lideresIndex = lideresInicioContinuacion;
+  let primeraContinuacionInfluencia = true;
+  while (lideresIndex < ficha.lideres.length) {
+    const influenceData = {
+      lideres:ficha.lideres.slice(lideresIndex,lideresIndex+6),
+      gruposPresencia:[],
+      mostrarGrupoDominante:primeraContinuacionInfluencia && funcionesEmpujanInfluencia,
+      influenciaDosColumnas:true
+    };
+    const ultimaPaginaDiputaciones = continuationPages.length ? continuationPages[continuationPages.length-1] : null;
+    const puedeCompartirConDiputaciones = primeraContinuacionInfluencia && ultimaPaginaDiputaciones && ultimaPaginaDiputaciones.diputaciones.length <= 3;
+    if (puedeCompartirConDiputaciones) Object.assign(ultimaPaginaDiputaciones,influenceData);
+    else continuationPages.push({diputaciones:[],...influenceData,aspirantes:[],territorio:[]});
+    lideresIndex += influenceData.lideres.length;
+    primeraContinuacionInfluencia = false;
+  }
+  if (funcionesEmpujanInfluencia && primeraContinuacionInfluencia) {
+    const ultimaPaginaDiputaciones = continuationPages.length ? continuationPages[continuationPages.length-1] : null;
+    const influenceData = {lideres:[],gruposPresencia:[],mostrarGrupoDominante:true,influenciaDosColumnas:true,aspirantes:[],territorio:[]};
+    if (ultimaPaginaDiputaciones && ultimaPaginaDiputaciones.diputaciones.length <= 3) Object.assign(ultimaPaginaDiputaciones,influenceData);
+    else continuationPages.push({diputaciones:[],...influenceData});
+  }
+
+  let aspirantesIndex = 0;
+  const paginaInfluenciaDisponible = [...continuationPages].reverse().find(page =>
+    page.influenciaDosColumnas && (
+      (page.diputaciones.length <= 2 && page.lideres.length <= 4) ||
+      (page.diputaciones.length === 3 && page.lideres.length <= 5)
+    )
+  );
+  if (paginaInfluenciaDisponible && aspirantesRestantes.length) {
+    const capacidadAspirantes = paginaInfluenciaDisponible.diputaciones.length === 3 ? 3 : paginaInfluenciaDisponible.diputaciones.length ? 5 : 7;
+    paginaInfluenciaDisponible.aspirantes = aspirantesRestantes.slice(0,capacidadAspirantes);
+    aspirantesIndex = paginaInfluenciaDisponible.aspirantes.length;
+  }
+  for (let index=aspirantesIndex; index<aspirantesRestantes.length; index+=10) {
+    continuationPages.push({diputaciones:[],lideres:[],gruposPresencia:[],mostrarGrupoDominante:false,influenciaDosColumnas:false,aspirantes:aspirantesRestantes.slice(index,index+10),territorio:[]});
+  }
+
+  let territorioIndex = territorioEnPrimera ? firstTerritorio.length : 0;
+  const paginaDisponibleParaTerritorio = [...continuationPages].reverse().find(page=>page.aspirantes.length);
+  if (!territorioEnPrimera && paginaDisponibleParaTerritorio) {
+    const capacidadTerritorio = paginaDisponibleParaTerritorio.aspirantes.length <= 3 ? 9 : paginaDisponibleParaTerritorio.aspirantes.length <= 8 ? 9 : 3;
+    paginaDisponibleParaTerritorio.territorio=ficha.territorio.slice(0,capacidadTerritorio);
+    territorioIndex=paginaDisponibleParaTerritorio.territorio.length;
+  }
+  for (; territorioIndex<ficha.territorio.length; territorioIndex+=12) {
+    continuationPages.push({diputaciones:[],lideres:[],gruposPresencia:[],mostrarGrupoDominante:false,influenciaDosColumnas:false,aspirantes:[],territorio:ficha.territorio.slice(territorioIndex,territorioIndex+12)});
+  }
+  let gruposEnPrimera = [];
+  let gruposCierreIndex = 0;
+  if (territorioEnPrimera && gruposPresencia.length <= 2) {
+    gruposEnPrimera = gruposPresencia;
+    gruposCierreIndex = gruposPresencia.length;
+  }
+  if (!territorioEnPrimera && gruposPresencia.length) {
+    const ultimaPaginaTerritorio = [...continuationPages].reverse().find(page=>page.territorio.length);
+    const capacidad = ultimaPaginaTerritorio
+      ? (ultimaPaginaTerritorio.territorio.length <= 6 ? 4 : ultimaPaginaTerritorio.territorio.length <= 9 ? 2 : 0)
+      : 0;
+    if (capacidad) {
+      ultimaPaginaTerritorio.gruposPresencia=gruposPresencia.slice(0,capacidad);
+      gruposCierreIndex=ultimaPaginaTerritorio.gruposPresencia.length;
+    }
+  }
+  for (; gruposCierreIndex<gruposPresencia.length; gruposCierreIndex+=8) {
+    continuationPages.push({diputaciones:[],lideres:[],gruposPresencia:gruposPresencia.slice(gruposCierreIndex,gruposCierreIndex+8),mostrarGrupoDominante:false,influenciaDosColumnas:false,aspirantes:[],territorio:[]});
+  }
+%>
+<div class="page">
+  <div class="municipio"><%= ficha.municipio.nombre %></div>
+
+  <div class="band">ACTORES POLÍTICOS EN FUNCIONES PÚBLICAS</div>
+
+  <% if (ficha.presidencia) { %>
+  <div class="green">PRESIDENCIA MUNICIPAL</div>
+  <div class="box person-main">
+    <img class="photo" src="<%= photo(ficha.presidencia.foto_path) %>">
+    <div>
+      <div class="name"><%= ficha.presidencia.nombre_completo %></div>
+      <div class="party"><%= ficha.presidencia.partido || '' %></div>
+      <% if(ficha.presidencia.observaciones){ %>
+        <div class="center small"><strong>COALICIÓN Y SIGLADO</strong><br><%= ficha.presidencia.observaciones %></div>
+      <% } %>
+    </div>
+    <div class="refgrid">
+      <% const presidencyReferences=ficha.presidencia.referentes_principales?.length ? ficha.presidencia.referentes_principales : (ficha.presidencia.referente_completo ? [{referente_completo:ficha.presidencia.referente_completo}] : []); %>
+      <% presidencyReferences.forEach((reference,index)=>{ const referenceName=reference.referente_completo||reference.nombre_completo||reference.referente_nombre||''; %>
+        <div class="refrow"><strong><%= presidencyReferences.length>1 ? `REFERENTE ${index+1}` : 'REFERENTE' %></strong><span><%= referenceName %></span></div>
+      <% }) %>
+      <div class="refrow hl <%= yn(ficha.presidencia.puede_reelegirse)==='NO'?'no':'' %>"><strong>PUEDE REELEGIRSE</strong><span><%= yn(ficha.presidencia.puede_reelegirse) %></span></div>
+      <div class="refrow hl <%= yn(ficha.presidencia.pretende_reelegirse)==='NO'?'no':'' %>"><strong>PRETENDE REELEGIRSE</strong><span><%= yn(ficha.presidencia.pretende_reelegirse) %></span></div>
+      <div class="refrow hl <%= yn(ficha.presidencia.podria_ganar_eleccion)==='NO'?'no':'' %>"><strong>PODRÍA GANAR ELECCIÓN</strong><span><%= yn(ficha.presidencia.podria_ganar_eleccion) %></span></div>
+    </div>
+  </div>
+  <% } %>
+
+  <% for (const label of ['DIPUTACIÓN FEDERAL','DIPUTACIÓN LOCAL']) { const items=firstDiputaciones.filter(actor=>actor.tipo_label===label); if(items.length){ %>
+    <div class="green"><%= label %></div>
+    <% items.forEach(d=>{ %><div class="box person-main deputy-box" style="grid-template-columns:24mm 1.4fr 1fr;min-height:20mm">
+        <img class="photo" src="<%= photo(d.foto_path) %>">
+        <div><div class="name"><%= d.nombre_completo %></div><div class="party"><%= d.partido || '' %></div><% if(d.distrito || d.distrito_texto){ %><div class="district"><%= d.distrito || d.distrito_texto %></div><% } %></div>
+        <div class="refrow"><strong>REFERENTE</strong><span><%= d.referente_completo || '' %></span></div>
+      </div><% }) %>
+  <% }} %>
+
+  <% if(!funcionesEmpujanInfluencia){ %>
+  <div class="two">
+    <div>
+      <div class="band influence-band">ACTORES POLÍTICOS, EXTERNOS QUE INFLUYEN EN EL MUNICIPIO</div>
+      <div class="maroon">LÍDERES</div>
+      <div class="influence leaders-influence">
+        <% firstLideres.forEach(x=>{ %>
+          <div class="leader-item">
+            <img class="photo" src="<%= photo(x.foto_path) %>">
+            <div><div><%= x.nombre_completo %></div><% if(String(x.referente_completo || '').trim()){ %><div class="leader-reference"><strong>REFERENTE</strong><span><%= x.referente_completo %></span></div><% } %></div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <div>
+      <div class="maroon">GRUPO POLÍTICO DOMINANTE EN EL MUNICIPIO</div>
+      <div class="influence dominant-group"><% if(ficha.grupo_politico_imagen_path){ %><img class="photo" src="<%= photo(ficha.grupo_politico_imagen_path) %>"><% } %><strong><%= ficha.grupo_politico || 'SIN CAPTURA' %></strong></div>
+    </div>
+  </div><% } %>
+
+  <% if(!contenidoRequiereContinuacion){ %><div class="band" style="width:74%;margin-top:<%= limiteAspirantesPrimeraPagina===2?'1mm':'4mm' %>">ACTORES POLÍTICOS CON ASPIRACIONES EN 2027</div>
+  <div class="asp-box <%= firstLideres.length > 4 || firstDiputaciones.length > 2 ? 'compact' : '' %>">
+    <div class="asp-header"><span></span><span></span><span>REFERENTE</span><% if(mostrarSubreferente){ %><span>SUBREFERENTE</span><% } %></div>
+    <% firstAspirantes.forEach(a=>{ %>
+    <div class="asp-row">
+      <img class="photo" src="<%= photo(a.foto_path) %>">
+      <div class="center"><%= a.nombre_completo %><div class="party"><%= a.partido || '' %></div></div>
+      <div class="center"><%= a.referente_completo || '' %></div>
+      <% if(mostrarSubreferente){ %><div class="center"><%= a.subreferente || a.subreferente_texto || '' %></div><% } %>
+    </div>
+    <% }) %>
+  </div><% } %>
+
+  <% if(territorioEnPrimera){ %><div class="territorio">
+    <div class="band" style="width:60%">PERSONAL EN TERRITORIO</div>
+    <div class="territorio-grid">
+      <% firstTerritorio.forEach(t=>{ %>
+        <div class="terr-item">
+          <img class="photo" src="<%= photo(t.foto_path) %>">
+          <div>
+            <div><%= t.nombre_completo %></div>
+            <div><%= t.tipo_personal %></div>
+            <% if(String(t.cargo_funcion || t.cargo_funcion_texto || '').trim()){ %><strong>CARGO / FUNCIÓN</strong><div><%= t.cargo_funcion || t.cargo_funcion_texto %></div><% } %>
+            <strong>REFERENTE</strong>
+            <div><%= t.referente_completo || '' %></div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div><% } %>
+
+  <% if(gruposEnPrimera.length){ %><div class="presence-terminal">
+    <div class="maroon">GRUPOS CON PRESENCIA EN EL MUNICIPIO</div>
+    <div class="presence-terminal-box"><div class="presence-list"><% gruposEnPrimera.forEach(group=>{ %><div class="presence-item"><img class="photo" src="<%= photo(group.imagen_path) %>"><div><strong><%= group.actor_politico %></strong><span><%= group.grupo_nombre %></span></div></div><% }) %></div></div>
+  </div><% } %>
+
+  <div class="updated-label">ÚLTIMA ACTUALIZACIÓN: <%= lastUpdated(ficha.ultima_actualizacion) %></div><div class="page-no">1</div>
+</div>
+
+<% continuationPages.forEach((continuation,pageIndex)=>{ %>
+<div class="page continuation">
+  <div class="municipio"><%= ficha.municipio.nombre %></div>
+
+  <% if(continuation.diputaciones.length){ %>
+    <div class="band">ACTORES POLÍTICOS EN FUNCIONES PÚBLICAS</div>
+    <% for (const label of ['DIPUTACIÓN FEDERAL','DIPUTACIÓN LOCAL']) { const items=continuation.diputaciones.filter(actor=>actor.tipo_label===label); if(items.length){ %>
+      <div class="green"><%= label %></div>
+      <% items.forEach(d=>{ %><div class="box person-main deputy-box" style="grid-template-columns:24mm 1.4fr 1fr;min-height:20mm">
+          <img class="photo" src="<%= photo(d.foto_path) %>">
+          <div><div class="name"><%= d.nombre_completo %></div><div class="party"><%= d.partido || '' %></div><% if(d.distrito || d.distrito_texto){ %><div class="district"><%= d.distrito || d.distrito_texto %></div><% } %></div>
+          <div class="refrow"><strong>REFERENTE</strong><span><%= d.referente_completo || '' %></span></div>
+        </div><% }) %>
+    <% }} %>
+  <% } %>
+
+  <% if(continuation.influenciaDosColumnas){ %>
+    <div class="two <%= continuation.mostrarGrupoDominante?'':'single' %>">
+      <div>
+        <div class="band influence-band">ACTORES POLÍTICOS, EXTERNOS QUE INFLUYEN EN EL MUNICIPIO</div>
+        <div class="maroon">LÍDERES</div>
+        <div class="influence leaders-influence"><% continuation.lideres.forEach(x=>{ %><div class="leader-item"><img class="photo" src="<%= photo(x.foto_path) %>"><div><div><%= x.nombre_completo %></div><% if(String(x.referente_completo || '').trim()){ %><div class="leader-reference"><strong>REFERENTE</strong><span><%= x.referente_completo %></span></div><% } %></div></div><% }) %></div>
+      </div>
+      <% if(continuation.mostrarGrupoDominante){ %><div>
+        <div class="maroon">GRUPO POLÍTICO DOMINANTE EN EL MUNICIPIO</div>
+        <div class="influence dominant-group"><% if(ficha.grupo_politico_imagen_path){ %><img class="photo" src="<%= photo(ficha.grupo_politico_imagen_path) %>"><% } %><strong><%= ficha.grupo_politico || 'SIN CAPTURA' %></strong></div>
+      </div><% } %>
+    </div>
+  <% } %>
+
+  <% if(continuation.aspirantes.length){ %>
+    <div class="band" style="width:74%;margin-top:4mm">ACTORES POLÍTICOS CON ASPIRACIONES EN 2027</div>
+    <div class="asp-box continued">
+      <div class="asp-header"><span></span><span></span><span>REFERENTE</span><% if(mostrarSubreferente){ %><span>SUBREFERENTE</span><% } %></div>
+      <% continuation.aspirantes.forEach(a=>{ %>
+        <div class="asp-row">
+          <img class="photo" src="<%= photo(a.foto_path) %>">
+          <div class="center"><%= a.nombre_completo %><div class="party"><%= a.partido || '' %></div></div>
+          <div class="center"><%= a.referente_completo || '' %></div>
+          <% if(mostrarSubreferente){ %><div class="center"><%= a.subreferente || a.subreferente_texto || '' %></div><% } %>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if(continuation.territorio.length){ %>
+    <div class="territorio">
+      <div class="band" style="width:60%">PERSONAL EN TERRITORIO</div>
+      <div class="territorio-grid">
+        <% continuation.territorio.forEach(t=>{ %>
+          <div class="terr-item">
+            <img class="photo" src="<%= photo(t.foto_path) %>">
+            <div>
+              <div><%= t.nombre_completo %></div>
+              <div><%= t.tipo_personal %></div>
+              <% if(String(t.cargo_funcion || t.cargo_funcion_texto || '').trim()){ %><strong>CARGO / FUNCIÓN</strong><div><%= t.cargo_funcion || t.cargo_funcion_texto %></div><% } %>
+              <strong>REFERENTE</strong>
+              <div><%= t.referente_completo || '' %></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+
+  <% if(continuation.gruposPresencia.length){ %><div class="presence-terminal">
+    <div class="maroon">GRUPOS CON PRESENCIA EN EL MUNICIPIO</div>
+    <div class="presence-terminal-box"><div class="presence-list"><% continuation.gruposPresencia.forEach(group=>{ %><div class="presence-item"><img class="photo" src="<%= photo(group.imagen_path) %>"><div><strong><%= group.actor_politico %></strong><span><%= group.grupo_nombre %></span></div></div><% }) %></div></div>
+  </div><% } %>
+
+  <div class="updated-label">ÚLTIMA ACTUALIZACIÓN: <%= lastUpdated(ficha.ultima_actualizacion) %></div><div class="page-no"><%= pageIndex+2 %></div>
+</div>
+<% }) %>
+
+<% personalCoordinacionPages.forEach((records,pageIndex)=>{ %>
+<div class="page">
+  <div class="municipio"><%= ficha.municipio.nombre %></div>
+  <div class="coordination-page-title">PERSONAL DE LA COORDINACIÓN<% if(personalCoordinacionPages.length>1){ %> · CONTINUACIÓN <%= pageIndex+1 %><% } %></div>
+  <div class="coordination-grid">
+    <% records.forEach(person=>{ %>
+      <article class="coordination-card">
+        <img class="photo" src="<%= photo(person.foto_path) %>">
+        <div class="coordination-copy">
+          <strong><%= person.nombre || person.nombre_completo || '' %></strong>
+          <% if(String(person.cargo||'').trim()){ %><span><b>CARGO / FUNCIÓN:</b> <%= person.cargo %></span><% } %>
+          <% if(String(person.coordinacion_general||'').trim()){ %><span><b>COORDINACIÓN:</b> <%= person.coordinacion_general %></span><% } %>
+          <% if(String(person.region||'').trim()){ %><span><b>REGIÓN:</b> <%= person.region %></span><% } %>
+          <% if(String(person.telefono||'').trim()){ %><span><b>TELÉFONO:</b> <%= person.telefono %></span><% } %>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+  <div class="updated-label">ÚLTIMA ACTUALIZACIÓN: <%= lastUpdated(ficha.ultima_actualizacion) %></div><div class="page-no"><%= continuationPages.length+pageIndex+2 %></div>
+</div>
+<% }) %>
+
+<% if(includeHoja2 && ficha.hoja2){ %>
+<div class="page" style="display:flex;align-items:center;justify-content:center;background:#fff">
+  <img src="<%= photo(ficha.hoja2.ruta) %>" style="width:100%;height:100%;object-fit:contain">
+  <div class="updated-label">ÚLTIMA ACTUALIZACIÓN: <%= lastUpdated(ficha.ultima_actualizacion) %></div><div class="page-no"><%= continuationPages.length+personalCoordinacionPages.length+2 %></div>
+</div>
+<% } %>
+</body>
+</html>

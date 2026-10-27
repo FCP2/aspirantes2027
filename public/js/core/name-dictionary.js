@@ -1,0 +1,19 @@
+window.NAME_DICTIONARY = [
+  'Aarón','Abraham','Adrián','Agustín','Alberto','Alejandro','Alfredo','Andrés','Ángel','Antonio','Arturo',
+  'Ana','Beatriz','Benjamín','Brenda','Carlos','César','Claudia','Cristian','Daniel','David','Diana','Eduardo',
+  'Elías','Emmanuel','Enrique','Ernesto','Esteban','Fabián','Fátima','Federico','Felipe','Fernando','Francisco',
+  'Gabriel','Gabriela','Gerardo','Gloria','Gonzalo','Guadalupe','Guillermo','Héctor','Hugo','Ignacio','Inés',
+  'Isabel','Iván','Javier','Joaquín','Jorge','José','Juan','Julia','Julio','Karla','Laura','Leticia','Liliana',
+  'Lorena','Lucía','Luis','Manuel','Marco','Marcos','Margarita','María','Mariana','Mario','Martha','Martín',
+  'Mauricio','Miguel','Mónica','Natalia','Nicolás','Noé','Norma','Óscar','Patricia','Paola','Pedro','Rafael',
+  'Ramón','Raúl','Ricardo','Roberto','Rocío','Rodrigo','Rosa','Rubén','Salvador','Sandra','Santiago','Sebastián',
+  'Sergio','Silvia','Sofía','Teresa','Valentín','Verónica','Vicente','Víctor','Ximena','Yolanda',
+  'Aguilar','Álvarez','Ávila','Báez','Cabrera','Camacho','Cárdenas','Carrillo','Castillo','Castro','Chávez',
+  'Colín','Contreras','Cortés','Cruz','Dávila','Díaz','Domínguez','Escobar','Espinosa','Esquivel','Flores',
+  'Franco','Fuentes','García','Garza','Gil','Gómez','González','Gutiérrez','Guzmán','Hernández','Herrera',
+  'Ibarra','Jiménez','Juárez','Lara','León','López','Luna','Maldonado','Martínez','Medina','Méndez','Mendoza',
+  'Miranda','Molina','Monroy','Montes','Mora','Morales','Moreno','Muñoz','Navarro','Núñez','Ochoa','Olvera',
+  'Ortiz','Pacheco','Padilla','Paredes','Peña','Pérez','Ramírez','Ramos','Reyes','Ríos','Rivera','Rodríguez',
+  'Rojas','Romero','Ruiz','Salazar','Sánchez','Sandoval','Santos','Silva','Solis','Soto','Suárez','Torres',
+  'Trejo','Valdez','Valencia','Vargas','Vázquez','Vega','Velázquez','Villanueva','Zamora','Zúñiga'
+];

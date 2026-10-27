@@ -1,0 +1,147 @@
+{
+  "source": "DIRECTORIO SSGG 050925 (1).pdf",
+  "coordinaciones": [
+    {
+      "nombre": "VALLE DE TOLUCA",
+      "coordinador": "David Orihuela Nava",
+      "telefono": "554 132 5216",
+      "regiones": [
+        {
+          "nombre": "JILOTEPEC",
+          "director": "Moisés Hiram Olguín Nava",
+          "telefono": "552 818 8220",
+          "municipios": ["Acambay de Ruiz Castañeda", "Aculco", "Chapa de Mota", "Jilotepec", "Morelos", "Polotitlán", "Soyaniquilpan de Juárez", "Temascalcingo", "Timilpan", "Villa del Carbón"]
+        },
+        {
+          "nombre": "IXTLAHUACA",
+          "director": "Diana Laura Olvera Gómez",
+          "telefono": "729 100 4047",
+          "municipios": ["Atlacomulco", "El Oro", "Ixtlahuaca", "Jiquipilco", "Jocotitlán", "San Felipe del Progreso", "San José del Rincón", "Villa Victoria"]
+        },
+        {
+          "nombre": "TOLUCA",
+          "director": "Adriana Monserrat Rodríguez Santana",
+          "telefono": "722 647 5770",
+          "municipios": ["Almoloya de Juárez", "Almoloya del Río", "Calimaya", "Metepec", "Mexicaltzingo", "San Mateo Atenco", "Toluca", "Zinacantepec"]
+        },
+        {
+          "nombre": "NICOLÁS ROMERO",
+          "director": "Jesús Rivera Massé",
+          "telefono": "561 137 6535",
+          "municipios": ["Isidro Fabela", "Jilotzingo", "Nicolás Romero", "Otzolotepec", "Temoaya", "Xonacatlán"]
+        },
+        {
+          "nombre": "LERMA",
+          "director": "Javier Arellano Rodríguez",
+          "telefono": "713 112 4636",
+          "municipios": ["Atizapán", "Capulhuac", "Chapultepec", "Lerma", "Ocoyoacac", "San Antonio la Isla", "Texcalyacac", "Tianguistenco", "Xalatlaco"]
+        }
+      ]
+    },
+    {
+      "nombre": "SUR-SURESTE",
+      "coordinador": "Lino Rodríguez González",
+      "telefono": "712 132 1403",
+      "regiones": [
+        {
+          "nombre": "VALLE DE BRAVO",
+          "director": "Alejandro Sánchez Gómez",
+          "telefono": "722 157 3223",
+          "municipios": ["Amanalco", "Donato Guerra", "Ixtapan del Oro", "Otzoloapan", "Santo Tomás", "Temascaltepec", "Valle de Bravo", "Villa de Allende", "Zacazonapan"]
+        },
+        {
+          "nombre": "TEJUPILCO",
+          "director": "Herminio Santín Campuzano",
+          "telefono": "722 622 7631",
+          "municipios": ["Amatepec", "Luvianos", "Tejupilco", "Tlatlaya"]
+        },
+        {
+          "nombre": "TENANCINGO",
+          "director": "Jesús Roberto Acosta Martínez",
+          "telefono": "553 147 5740",
+          "municipios": ["Coatepec Harinas", "Ixtapan de la Sal", "Joquicingo", "Malinalco", "Ocuilan", "Rayón", "Tenancingo", "Tenango del Valle", "Tonatico", "Villa Guerrero", "Zumpahuacán"]
+        },
+        {
+          "nombre": "SULTEPEC",
+          "director": "Urbano Pagaza Martínez",
+          "telefono": "722 377 8394",
+          "municipios": ["Almoloya de Alquisiras", "San Simón de Guerrero", "Sultepec", "Texcaltitlán", "Zacualpan"]
+        }
+      ]
+    },
+    {
+      "nombre": "NORORIENTE-CENTRO",
+      "coordinador": "Guadalupe Balderas Cisneros",
+      "telefono": "557 300 6629",
+      "regiones": [
+        {
+          "nombre": "TECÁMAC",
+          "director": "Alejandro Valencia Rivero",
+          "telefono": "558 368 4618",
+          "municipios": ["Acolman", "Axapusco", "Nopaltepec", "Otumba", "San Martín de las Pirámides", "Tecámac", "Temascalapa", "Teotihuacán"]
+        },
+        {
+          "nombre": "ZUMPANGO",
+          "director": "Carlos Gustavo Acuña Santillán",
+          "telefono": "551 201 1814",
+          "municipios": ["Apaxco", "Coyotepec", "Huehuetoca", "Hueypoxtla", "Teoloyucan", "Tepotzotlán", "Tequixquiac", "Zumpango"]
+        },
+        {
+          "nombre": "TULTITLÁN",
+          "director": "René Nahohatzin Juárez Torres",
+          "telefono": "552 795 0003",
+          "municipios": ["Coacalco de Berriozábal", "Cuautitlán", "Jaltenco", "Melchor Ocampo", "Nextlalpan", "Tonanitla", "Tultepec", "Tultitlán"]
+        },
+        {
+          "nombre": "TLALNEPANTLA",
+          "director": "Rubén Balderas Alarcón",
+          "telefono": "559 195 8743",
+          "municipios": ["Atizapán de Zaragoza", "Cuautitlán Izcalli", "Tlalnepantla de Baz"]
+        },
+        {
+          "nombre": "NAUCALPAN",
+          "director": "Juan Carlos Fajardo Vargas",
+          "telefono": "562 821 4784",
+          "municipios": ["Huixquilucan", "Naucalpan de Juárez"]
+        }
+      ]
+    },
+    {
+      "nombre": "ORIENTE",
+      "coordinador": "José Cipriano Gutiérrez Vázquez",
+      "telefono": "563 333 3026",
+      "regiones": [
+        {
+          "nombre": "CHALCO",
+          "director": "Miguel Ángel Xolalpa Molina",
+          "telefono": "552 619 1672",
+          "municipios": ["Amecameca", "Atlautla", "Ayapango", "Chalco", "Cocotitlán", "Ecatzingo", "Juchitepec", "Ozumba", "Temamatla", "Tenango del Aire", "Tepetlixpa", "Tlalmanalco"]
+        },
+        {
+          "nombre": "IXTAPALUCA",
+          "director": "Isaac Iván Peregrina Ramos",
+          "telefono": "556 874 3054",
+          "municipios": ["Ixtapaluca", "La Paz", "Valle de Chalco Solidaridad"]
+        },
+        {
+          "nombre": "TEXCOCO",
+          "director": "Elizabeth Guadalupe Terrazas Ramírez",
+          "telefono": "595 110 7992",
+          "municipios": ["Atenco", "Chiautla", "Chicoloapan", "Chiconcuac", "Chimalhuacán", "Papalotla", "Tepetlaoxtoc", "Texcoco", "Tezoyuca"]
+        },
+        {
+          "nombre": "NEZAHUALCÓYOTL",
+          "director": "Gonzalo Adrián Rosales Olascuaga",
+          "telefono": "551 294 8234",
+          "municipios": ["Nezahualcóyotl"]
+        },
+        {
+          "nombre": "ECATEPEC",
+          "director": "Yaxtli Amellali Caballero Téllez",
+          "telefono": "551 364 8092",
+          "municipios": ["Ecatepec de Morelos"]
+        }
+      ]
+    }
+  ]
+}
