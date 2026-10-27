@@ -3,10 +3,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ejs = require('ejs');
-const puppeteer = require('puppeteer');
 const sharp = require('sharp');
 const wellknown = require('wellknown');
 const mapService = require('./reportes-mapa.service');
+const pagedPdf = require('./paged-map-pdf.service');
 
 function resolveFilePath(value) {
   if (!value) return null;
@@ -34,8 +34,8 @@ async function photoThumbnails(values) {
         const buffer = await sharp(file)
           .rotate()
           .flatten({ background: '#f1eee8' })
-          .resize({ width: 300, height: 400, fit: 'inside', withoutEnlargement: true })
-          .jpeg({ quality: 76, mozjpeg: true })
+          .resize({ width: 180, height: 220, fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 72, mozjpeg: true })
           .toBuffer();
         thumbnails.set(file, `data:image/jpeg;base64,${buffer.toString('base64')}`);
       } catch {
@@ -44,7 +44,7 @@ async function photoThumbnails(values) {
     }
   }
 
-  await Promise.all(Array.from({ length: Math.min(4, paths.length) }, prepareNext));
+  await Promise.all(Array.from({ length: Math.min(2, paths.length) }, prepareNext));
   return value => thumbnails.get(resolveFilePath(value)) || '';
 }
 
@@ -150,26 +150,7 @@ exports.generate = async ({ officeId, key }) => {
   fs.mkdirSync(directory,{ recursive:true });
   const safe = reference.nombre.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'').toUpperCase();
   const output = path.join(directory,`MAPA_REFERENTE_${safe || 'SIN_NOMBRE'}.pdf`);
-  const browser = await puppeteer.launch({ headless:true, args:['--no-sandbox'] });
-  try {
-    const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(120000);
-    page.setDefaultTimeout(120000);
-    await page.emulateMediaType('print');
-    // El reporte ya contiene SVG e imágenes como data URI. Esperar networkidle0
-    // no aporta nada y puede bloquear la descarga en reportes con muchas fotos.
-    await page.setContent(html,{ waitUntil:'domcontentloaded', timeout:120000 });
-    await page.evaluate(async()=>{
-      if(document.fonts?.ready)await document.fonts.ready;
-      await Promise.all([...document.images].map(image=>image.complete ? Promise.resolve() : new Promise(resolve=>{
-        image.addEventListener('load',resolve,{once:true});
-        image.addEventListener('error',resolve,{once:true});
-      })));
-    });
-    await page.pdf({ path:output, printBackground:true, preferCSSPageSize:true, margin:{top:0,right:0,bottom:0,left:0}, timeout:120000 });
-  } finally {
-    await browser.close();
-  }
+  await pagedPdf.writePdf(html, output);
   return output;
 };
 
