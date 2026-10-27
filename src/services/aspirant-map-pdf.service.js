@@ -3,11 +3,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ejs = require('ejs');
-const puppeteer = require('puppeteer');
 const sharp = require('sharp');
 const mapService = require('./reportes-mapa.service');
 const { buildMapSvg } = require('./reference-map-pdf.service');
 const { normalizeReferenceKey } = require('../utils/reference-normalizer');
+const pagedPdf = require('./paged-map-pdf.service');
 
 function validScope(value) {
   return ['referente', 'subreferente', 'ambos'].includes(value) ? value : 'ambos';
@@ -26,7 +26,7 @@ async function createPhotoThumbnails(records) {
   const files = [...new Set(records.map(record => resolvePhotoFile(record.foto_url)).filter(Boolean))];
   const thumbnails = new Map();
   let cursor = 0;
-  const workerCount = Math.min(6, files.length);
+  const workerCount = Math.min(2, files.length);
 
   async function worker() {
     while (cursor < files.length) {
@@ -37,12 +37,12 @@ async function createPhotoThumbnails(records) {
           .rotate()
           .flatten({ background: '#e8e3da' })
           .resize({
-            width: 180,
-            height: 240,
+            width: 160,
+            height: 200,
             fit: 'inside',
             withoutEnlargement: true
           })
-          .jpeg({ quality: 68, mozjpeg: true })
+          .jpeg({ quality: 70, mozjpeg: true })
           .toBuffer();
         thumbnails.set(file, `data:image/jpeg;base64,${buffer.toString('base64')}`);
       } catch {
@@ -123,33 +123,6 @@ async function render({
   });
 }
 
-async function writePdf(html, output) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox']
-  });
-
-  try {
-    const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(120000);
-    page.setDefaultTimeout(120000);
-    await page.emulateMediaType('print');
-    await page.setContent(html, {
-      waitUntil: 'domcontentloaded',
-      timeout: 120000
-    });
-    await page.pdf({
-      path: output,
-      printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 },
-      timeout: 120000
-    });
-  } finally {
-    await browser.close();
-  }
-}
-
 exports.renderPreview = options => render({ ...options, general: false });
 exports.renderGeneralPreview = options => render({ ...options, general: true });
 exports.renderSubreferenceGeneralPreview = options => render({
@@ -171,7 +144,7 @@ exports.generate = async options => {
     .toUpperCase();
   const output = path.join(directory, `ASPIRANTES_2027_${safeName}.pdf`);
 
-  await writePdf(html, output);
+  await pagedPdf.writePdf(html, output);
   return output;
 };
 
@@ -181,7 +154,7 @@ exports.generateGeneral = async options => {
   fs.mkdirSync(directory, { recursive: true });
   const output = path.join(directory, 'ASPIRANTES_2027_GENERAL.pdf');
 
-  await writePdf(html, output);
+  await pagedPdf.writePdf(html, output);
   return output;
 };
 
@@ -198,6 +171,6 @@ exports.generateSubreferenceGeneral = async options => {
     .toUpperCase();
   const output = path.join(directory, `ASPIRANTES_2027_SUBREFERENTE_${safeName}.pdf`);
 
-  await writePdf(html, output);
+  await pagedPdf.writePdf(html, output);
   return output;
 };
