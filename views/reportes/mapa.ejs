@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/typography.css?v=20260918-1"><link rel="stylesheet" href="/css/history.css?v=20260922-1">
 </head>
 <body>
-<header class="map-topbar"><div class="map-brand"><span class="map-brandmark"><i class="bi bi-map-fill"></i></span><div><strong>Reportes cartográficos</strong></div></div><nav class="map-nav"><span class="readonly-chip"><i class="bi bi-database-lock"></i> SÓLO LECTURA</span><a class="button secondary" href="/revision-fuentes"><i class="bi bi-stars"></i> REVISIÓN</a><a class="button secondary" href="/captura"><i class="bi bi-pencil-square"></i> CAPTURA</a></nav></header>
+<header class="map-topbar"><div class="map-brand"><span class="map-brandmark"><i class="bi bi-map-fill"></i></span><div><strong>Reportes cartográficos</strong></div></div><nav class="map-nav"><span class="readonly-chip"><i class="bi bi-database-lock"></i> SÓLO LECTURA</span><a class="button secondary" href="/revision-fuentes"><i class="bi bi-stars"></i> REVISIÓN</a><a class="button secondary" href="/captura" data-capture-access><i class="bi bi-pencil-square"></i> CAPTURA</a></nav></header>
 <main class="map-layout">
 <aside class="report-sidebar">
 <section class="report-intro">
@@ -110,6 +110,6 @@
   </section>
 </div>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-<script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script><script src="/vendor/leaflet/leaflet.js"></script><script src="/vendor/wellknown/wellknown.js"></script><script src="/js/core/api.js"></script><script src="/js/core/actors-turnstile.js?v=20260908-1"></script><script src="/js/captura/actores.js?v=20260929-reportes-modal-1"></script><script src="/js/map.js?v=20260930-subreference-layer-1"></script><script src="/js/reportes/mapa.js?v=20260930-subreference-report-2"></script>
+<script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script><script src="/js/core/capture-access.js?v=20261027-1"></script><script src="/vendor/leaflet/leaflet.js"></script><script src="/vendor/wellknown/wellknown.js"></script><script src="/js/core/api.js"></script><script src="/js/core/actors-turnstile.js?v=20260908-1"></script><script src="/js/captura/actores.js?v=20260929-reportes-modal-1"></script><script src="/js/map.js?v=20260930-subreference-layer-1"></script><script src="/js/reportes/mapa.js?v=20260930-subreference-report-2"></script>
 <div id="historyKpis" class="history-kpis hidden"><div><small>PERIODOS</small><strong id="historyKpiPeriods">0</strong></div><div><small>MUNICIPIOS</small><strong id="historyKpiMunicipalities">0</strong></div><div class="history-bars" id="historyBars"></div></div>
 </body></html>
