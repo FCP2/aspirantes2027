@@ -1,4 +1,8 @@
 require('dotenv').config();
+if (process.env.RENDER === 'true' && !process.env.PUPPETEER_CACHE_DIR) {
+  const path = require('node:path');
+  process.env.PUPPETEER_CACHE_DIR = path.resolve('./storage/private/puppeteer');
+}
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
 

@@ -18,6 +18,9 @@ Estado de esta etapa (27 de octubre de 2026):
   El acceso HTTP público al directorio privado está cerrado.
 - Las sesiones de Render se conservan durante tres días en
   `storage/private/sessions.sqlite`; `SESSION_SECRET` debe permanecer estable.
+- Chromium 148 se instaló en `storage/private/puppeteer`. El servidor de Render
+  configura `PUPPETEER_CACHE_DIR` hacia esa ruta persistente antes de cargar
+  los servicios de PDF.
 
 ## Utilidades
 
@@ -40,6 +43,8 @@ habrá que reconciliar los cambios posteriores a esta copia.
   la revisión y los registros persistentes permanecieron intactos.
 - Respondieron correctamente las rutas HTTP de mapas, vista previa y salud.
 - Se generaron en memoria Excel individual/general y PDF por referente.
+- En Render se leyeron una ficha, dos fuentes y 471 comparaciones; Chromium
+  generó un PDF de referente en memoria desde los datos importados.
 - El modo Render bloqueó `/captura` sin sesión y devolvió 404 para
   `/storage/private/`.
 
