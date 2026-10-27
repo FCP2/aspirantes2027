@@ -15,7 +15,7 @@
 <body>
 <header class="review-topbar">
   <div class="brand"><div class="brandmark"><i class="bi bi-stars" aria-hidden="true"></i></div><div><strong>Revisión inteligente</strong><span><%= officeName %> · MÓDULO DE CONSULTA</span></div></div>
-  <div class="review-head-actions"><div class="readonly-badge"><span class="readonly-icon"><i class="bi bi-database-lock" aria-hidden="true"></i></span><span class="readonly-copy"><small>MODO DE CONSULTA</small><strong>Base municipal en solo lectura</strong></span></div><a class="button secondary" href="/reportes/mapa"><i class="bi bi-map"></i> REPORTES</a><a class="button secondary" href="/captura"><i class="bi bi-arrow-left"></i> VOLVER A CAPTURA</a></div>
+  <div class="review-head-actions"><div class="readonly-badge"><span class="readonly-icon"><i class="bi bi-database-lock" aria-hidden="true"></i></span><span class="readonly-copy"><small>MODO DE CONSULTA</small><strong>Base municipal en solo lectura</strong></span></div><a class="button secondary" href="/reportes/mapa"><i class="bi bi-map"></i> REPORTES</a><a class="button secondary" href="/captura" data-capture-access><i class="bi bi-arrow-left"></i> VOLVER A CAPTURA</a></div>
 </header>
 
 <main class="review-shell">
@@ -88,6 +88,7 @@
 </div>
 
 <script src="/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="/js/core/capture-access.js?v=20261027-1"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="/js/core/actors-turnstile.js?v=20260908-1"></script>
 <script src="/js/revision-fuentes/index.js?v=20260908-turnstile-1"></script>
