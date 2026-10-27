@@ -1,7 +1,6 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const ACCESS_SESSION_MS = 3 * 24 * 60 * 60 * 1000;
 
 const enabled = () => process.env.RENDER === 'true'
   || String(process.env.ACCESS_CONTROL_ENABLED || '').toLowerCase() === 'true';
@@ -18,37 +17,53 @@ function roleForToken(token) {
   return null;
 }
 
+function tokenVersion() {
+  const token = tokenFor();
+  if (!token) return null;
+  return crypto.createHmac(
+    'sha256',
+    String(process.env.SESSION_SECRET || 'local-dev-session')
+  ).update(token).digest('hex');
+}
+
+function clearSession(req) {
+  if (!req.session) return;
+  delete req.session.accessRole;
+  delete req.session.accessTokenVersion;
+  delete req.session.accessExpiresAt;
+}
+
 function setSession(req, role) {
   req.session.accessRole = role;
-  req.session.accessExpiresAt = Date.now() + ACCESS_SESSION_MS;
+  req.session.accessTokenVersion = tokenVersion();
+  delete req.session.accessExpiresAt;
 }
 
 function currentRole(req) {
-  if (!req.session?.accessRole || Number(req.session.accessExpiresAt || 0) <= Date.now()) {
-    if (req.session) { delete req.session.accessRole; delete req.session.accessExpiresAt; }
-    return null;
-  }
-  return req.session.accessRole;
+  if (!req.session?.accessRole) return null;
+  if (req.session.accessRole === 'editor'
+    && same(req.session.accessTokenVersion, tokenVersion())) return 'editor';
+  clearSession(req);
+  return null;
 }
 
 function login(req, res) {
   if (!enabled()) return res.json({ ok: true, role: 'editor', expiresAt: null });
   const role = roleForToken(req.body?.token);
-  if (!role) return res.status(401).json({ ok: false, message: 'Token inválido o vencido.' });
+  if (!role) return res.status(401).json({ ok: false, message: 'Token inválido.' });
   setSession(req, role);
   req.session.save(error => error
     ? res.status(500).json({ ok: false, message: 'No se pudo iniciar la sesión.' })
-    : res.json({ ok: true, role, expiresAt: req.session.accessExpiresAt }));
+    : res.json({ ok: true, role, expiresAt: null }));
 }
 
 function session(req, res) {
   const role = enabled() ? currentRole(req) : 'editor';
-  return res.json({ ok: true, authenticated: Boolean(role), role, expiresAt: req.session?.accessExpiresAt || null });
+  return res.json({ ok: true, authenticated: Boolean(role), role, expiresAt: null });
 }
 
 function logout(req, res) {
-  delete req.session.accessRole;
-  delete req.session.accessExpiresAt;
+  clearSession(req);
   req.session.save(error => error ? res.status(500).json({ ok: false }) : res.json({ ok: true }));
 }
 
@@ -80,6 +95,7 @@ function viewRole(role) {
     }
     const current = currentRole(req);
     if (current === 'editor' || (role === 'report' && current === 'report')) return next();
+    if (role === 'editor') return res.redirect(303, '/reportes/mapa?captura=token');
     return res.status(401).send('Acceso restringido. Usa el enlace con token autorizado.');
   };
 }
