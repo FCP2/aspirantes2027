@@ -54,7 +54,7 @@ app.use('/vendor/sweetalert2',express.static(path.join(__dirname,'..','node_modu
 app.use('/vendor/bootstrap-icons',express.static(path.join(__dirname,'..','node_modules','bootstrap-icons','font')));
 app.use('/vendor/leaflet',express.static(path.join(__dirname,'..','node_modules','leaflet','dist')));
 app.use('/vendor/wellknown',express.static(path.join(__dirname,'..','node_modules','wellknown')));
-app.use('/storage/photos', express.static(path.resolve('./storage/photos')));
+app.use('/storage/photos', access.requireRole('report'), express.static(path.resolve('./storage/photos')));
 app.use('/storage/hoja2', access.requireRole('report'), express.static(path.resolve('./storage/hoja2')));
 app.use('/api/access', accessRoutes);
 
@@ -69,6 +69,7 @@ app.get('/healthz', (_req, res) => {
 });
 
 app.get('/',(req,res)=>res.redirect('/reportes/mapa'));
+app.get('/reportes',(req,res)=>res.redirect('/reportes/mapa'));
 app.use('/api/municipios', access.requireRole('report'), municipiosRoutes);
 app.use('/api/fichas', access.requireRole('editor'), fichasRoutes);
 app.use('/api/personas', access.requireRole('editor'), personasRoutes);
@@ -88,6 +89,14 @@ function viewConfig() {
 }
 
 app.get('/captura', access.viewRole('editor'), (req,res)=>res.render('captura/index',viewConfig()));
+app.get('/reportes/acceso', (req, res) => {
+  const captureDestination = req.query.destino === 'captura';
+
+  return res.render('access/reportes', {
+    accessRole: captureDestination ? 'editor' : 'report',
+    accessTarget: captureDestination ? '/captura' : '/reportes/mapa'
+  });
+});
 app.get('/revision-fuentes', access.viewRole('report'), (req,res)=>res.render('revision-fuentes/index',viewConfig()));
 app.get('/reportes/mapa', access.viewRole('report'), (req,res)=>res.render('reportes/mapa',viewConfig()));
 
