@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Acceso a reportes · Fichas municipales</title>
+  <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+</head>
+<body>
+  <%- include('../partials/capture-access', {
+    accessPanel: {
+      role: accessRole,
+      target: accessTarget,
+      autoOpen: true,
+      dismissible: false,
+      eyebrow: accessRole === 'editor' ? 'Acceso de edición' : 'Consulta protegida',
+      title: accessRole === 'editor' ? 'Captura de datos' : 'Reportes cartográficos',
+      description: accessRole === 'editor'
+        ? 'Ingresa el token del personal autorizado para acceder a la captura de datos.'
+        : 'Ingresa el token de visualización para consultar los reportes municipales.',
+      note: 'Sesión protegida · El token no se muestra ni se guarda en la URL'
+    }
+  }) %>
+
+  <script src="/js/core/capture-access.js?v=20261028-2"></script>
+</body>
+</html>
