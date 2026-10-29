@@ -1,0 +1,324 @@
+<%
+  const panel = typeof accessPanel !== 'undefined' ? accessPanel : {};
+  const panelRole = panel.role || 'editor';
+  const panelTarget = panel.target || '/captura';
+  const panelAutoOpen = panel.autoOpen === true;
+  const panelDismissible = panel.dismissible !== false;
+  const panelEyebrow = panel.eyebrow || 'Acceso autorizado';
+  const panelTitle = panel.title || 'Captura de datos';
+  const panelDescription = panel.description
+    || 'Ingresa el token proporcionado al personal autorizado para continuar.';
+  const panelNote = panel.note
+    || 'Sesión protegida · El token no se muestra ni se guarda en la URL';
+%>
+<style>
+  .capture-access-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    overflow-y: auto;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(199, 164, 94, .18), transparent 30%),
+      radial-gradient(circle at 82% 82%, rgba(134, 22, 59, .24), transparent 34%),
+      rgba(25, 22, 26, .78);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .capture-access-overlay[hidden] { display: none; }
+
+  .capture-access-card {
+    box-sizing: border-box;
+    width: min(100%, 430px);
+    padding: 38px 38px 34px;
+    position: relative;
+    overflow: hidden;
+    color: #252129;
+    background: #fff;
+    border: 1px solid rgba(255, 255, 255, .78);
+    border-radius: 24px;
+    box-shadow: 0 28px 80px rgba(19, 12, 16, .32);
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .capture-access-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 5px;
+    background: linear-gradient(90deg, #86163b 0 72%, #c7a45e 72% 100%);
+  }
+
+  .capture-access-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 22px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: linear-gradient(145deg, #991b48, #6f102f);
+    border: 5px solid #f6edf0;
+    border-radius: 22px;
+    box-shadow: 0 12px 24px rgba(134, 22, 59, .22);
+    font-size: 28px;
+  }
+
+  .capture-access-heading {
+    margin-bottom: 27px;
+    text-align: center;
+  }
+
+  .capture-access-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: #a17e3e;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .capture-access-heading h2 {
+    margin: 0;
+    color: #2b252c;
+    font-size: clamp(22px, 5vw, 28px);
+    font-weight: 800;
+    letter-spacing: -.035em;
+    line-height: 1.15;
+  }
+
+  .capture-access-heading p {
+    margin: 10px auto 0;
+    max-width: 330px;
+    color: #716973;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  .capture-access-field label {
+    display: block;
+    margin: 0 0 8px 2px;
+    color: #514951;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .capture-access-input-wrap { position: relative; }
+
+  .capture-access-input-wrap i {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    color: #86163b;
+    font-size: 17px;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .capture-access-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px 0 46px;
+    color: #2a242b;
+    background: #f8f6f7;
+    border: 1px solid #ddd6da;
+    border-radius: 13px;
+    outline: none;
+    font: 600 14px/1 "Montserrat", sans-serif;
+    letter-spacing: .03em;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  }
+
+  .capture-access-input::placeholder {
+    color: #aaa2a8;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .capture-access-input:hover { border-color: #c9bdc3; }
+
+  .capture-access-input:focus {
+    background: #fff;
+    border-color: #86163b;
+    box-shadow: 0 0 0 4px rgba(134, 22, 59, .11);
+  }
+
+  .capture-access-input[aria-invalid="true"] {
+    border-color: #bd273e;
+    box-shadow: 0 0 0 4px rgba(189, 39, 62, .10);
+  }
+
+  .capture-access-error {
+    min-height: 18px;
+    margin: 7px 3px 8px;
+    color: #b51f38;
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.45;
+  }
+
+  .capture-access-submit {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #fff;
+    background: #86163b;
+    border: 0;
+    border-radius: 13px;
+    box-shadow: 0 10px 22px rgba(134, 22, 59, .22);
+    font: 800 11px/1 "Montserrat", sans-serif;
+    letter-spacing: .075em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform .18s ease, background-color .18s ease, box-shadow .18s ease;
+  }
+
+  .capture-access-submit:hover:not(:disabled) {
+    background: #71102f;
+    box-shadow: 0 13px 26px rgba(134, 22, 59, .27);
+    transform: translateY(-1px);
+  }
+
+  .capture-access-submit:focus-visible {
+    outline: 3px solid rgba(199, 164, 94, .75);
+    outline-offset: 3px;
+  }
+
+  .capture-access-submit:disabled {
+    cursor: wait;
+    opacity: .78;
+  }
+
+  .capture-access-submit .bi-arrow-right { font-size: 14px; }
+
+  .capture-access-spinner {
+    width: 15px;
+    height: 15px;
+    display: none;
+    border: 2px solid rgba(255, 255, 255, .45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: capture-access-spin .7s linear infinite;
+  }
+
+  .capture-access-submit.is-loading .capture-access-spinner { display: inline-block; }
+  .capture-access-submit.is-loading .bi-arrow-right { display: none; }
+
+  .capture-access-note {
+    margin: 18px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: #918991;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .035em;
+    text-align: center;
+  }
+
+  .capture-access-note i { color: #a17e3e; }
+  body.capture-access-open { overflow: hidden; }
+
+  @keyframes capture-access-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 520px) {
+    .capture-access-overlay { padding: 16px; }
+
+    .capture-access-card {
+      padding: 32px 22px 28px;
+      border-radius: 20px;
+    }
+
+    .capture-access-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 18px;
+      border-radius: 19px;
+      font-size: 25px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .capture-access-input,
+    .capture-access-submit { transition: none; }
+    .capture-access-spinner { animation-duration: 1.4s; }
+  }
+</style>
+
+<div
+  id="captureAccessOverlay"
+  class="capture-access-overlay"
+  data-access-role="<%= panelRole %>"
+  data-access-target="<%= panelTarget %>"
+  data-access-auto-open="<%= panelAutoOpen %>"
+  data-access-dismissible="<%= panelDismissible %>"
+  hidden
+>
+  <section
+    class="capture-access-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="captureAccessTitle"
+    aria-describedby="captureAccessDescription"
+  >
+    <span class="capture-access-icon" aria-hidden="true">
+      <i class="bi bi-shield-lock-fill"></i>
+    </span>
+
+    <header class="capture-access-heading">
+      <span class="capture-access-eyebrow"><%= panelEyebrow %></span>
+      <h2 id="captureAccessTitle"><%= panelTitle %></h2>
+      <p id="captureAccessDescription">
+        <%= panelDescription %>
+      </p>
+    </header>
+
+    <form id="captureAccessForm" novalidate>
+      <div class="capture-access-field">
+        <label for="captureAccessToken">Token de acceso</label>
+        <div class="capture-access-input-wrap">
+          <i class="bi bi-key-fill" aria-hidden="true"></i>
+          <input
+            id="captureAccessToken"
+            class="capture-access-input"
+            name="token"
+            type="password"
+            placeholder="Escribe o pega tu token"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            required
+          >
+        </div>
+      </div>
+
+      <p id="captureAccessError" class="capture-access-error" role="alert" aria-live="polite"></p>
+
+      <button id="captureAccessSubmit" class="capture-access-submit" type="submit">
+        <span class="capture-access-spinner" aria-hidden="true"></span>
+        <span class="capture-access-submit-label">Validar y entrar</span>
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      </button>
+    </form>
+
+    <p class="capture-access-note">
+      <i class="bi bi-lock-fill" aria-hidden="true"></i>
+      <%= panelNote %>
+    </p>
+  </section>
+</div>
