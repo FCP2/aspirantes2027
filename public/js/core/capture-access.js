@@ -1,63 +1,127 @@
 'use strict';
 
 (() => {
-  async function requestCaptureAccess() {
-    if (!window.Swal) return;
+  const overlay = document.getElementById('captureAccessOverlay');
+  const form = document.getElementById('captureAccessForm');
+  const input = document.getElementById('captureAccessToken');
+  const errorMessage = document.getElementById('captureAccessError');
+  const submitButton = document.getElementById('captureAccessSubmit');
+  const submitLabel = submitButton?.querySelector('.capture-access-submit-label');
 
-    const result = await Swal.fire({
-      icon: 'info',
-      title: 'Acceso a captura',
-      text: 'Ingresa el token de edición que te proporcionaron.',
-      input: 'password',
-      inputPlaceholder: 'Token de edición',
-      inputAttributes: {
-        autocomplete: 'off',
-        autocapitalize: 'off',
-        spellcheck: 'false'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'ENTRAR A CAPTURA',
-      cancelButtonText: 'CANCELAR',
-      confirmButtonColor: '#8f173d',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
-      inputValidator: value => value?.trim() ? undefined : 'Escribe el token de edición.',
-      preConfirm: async value => {
-        try {
-          const response = await fetch('/api/access/login', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: value.trim() })
-          });
-          const body = await response.json();
+  if (!overlay || !form || !input || !errorMessage || !submitButton || !submitLabel) {
+    return;
+  }
 
-          if (!response.ok || body.role !== 'editor') {
-            throw new Error(body.message || 'No se pudo autorizar la captura.');
-          }
+  let isSubmitting = false;
+  let previousFocus = null;
+  const expectedRole = overlay.dataset.accessRole || 'editor';
+  const accessTarget = overlay.dataset.accessTarget || '/captura';
+  const autoOpen = overlay.dataset.accessAutoOpen === 'true';
+  const dismissible = overlay.dataset.accessDismissible !== 'false';
 
-          return true;
-        } catch (error) {
-          Swal.showValidationMessage(error.message);
-          return false;
-        }
-      }
-    });
+  function roleCanAccess(role) {
+    if (role === 'editor') return true;
+    return expectedRole === 'report' && role === 'report';
+  }
 
-    if (result.isConfirmed) window.location.assign('/captura');
+  function setError(message = '') {
+    errorMessage.textContent = message;
+    input.setAttribute('aria-invalid', message ? 'true' : 'false');
+  }
+
+  function setLoading(active) {
+    isSubmitting = active;
+    submitButton.disabled = active;
+    submitButton.classList.toggle('is-loading', active);
+    submitLabel.textContent = active ? 'Validando acceso' : 'Validar y entrar';
+  }
+
+  function closeCaptureAccess() {
+    if (isSubmitting) return;
+
+    overlay.hidden = true;
+    document.body.classList.remove('capture-access-open');
+    input.value = '';
+    setError();
+    previousFocus?.focus?.();
+  }
+
+  function requestCaptureAccess(trigger = null) {
+    previousFocus = trigger || document.activeElement;
+    overlay.hidden = false;
+    document.body.classList.add('capture-access-open');
+    input.value = '';
+    setError();
+    setLoading(false);
+    window.requestAnimationFrame(() => input.focus());
   }
 
   document.querySelectorAll('[data-capture-access]').forEach(link => {
     link.addEventListener('click', event => {
       event.preventDefault();
-      requestCaptureAccess();
+      requestCaptureAccess(link);
     });
+  });
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (isSubmitting) return;
+
+    const token = input.value.trim();
+    if (!token) {
+      setError('Escribe el token de acceso para continuar.');
+      input.focus();
+      return;
+    }
+
+    setError();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/access/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      const body = contentType.includes('application/json')
+        ? await response.json()
+        : {};
+
+      if (!response.ok || !roleCanAccess(body.role)) {
+        throw new Error(body.message || 'El token no es válido o ya no está vigente.');
+      }
+
+      submitLabel.textContent = 'Acceso autorizado';
+      window.location.assign(accessTarget);
+    } catch (error) {
+      setError(error.message || 'No fue posible validar el acceso. Intenta nuevamente.');
+      setLoading(false);
+      input.select();
+      input.focus();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    if (errorMessage.textContent) setError();
+  });
+
+  overlay.addEventListener('click', event => {
+    if (dismissible && event.target === overlay) closeCaptureAccess();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (dismissible && event.key === 'Escape' && !overlay.hidden) closeCaptureAccess();
   });
 
   const url = new URL(window.location.href);
   if (url.searchParams.get('captura') === 'token') {
     url.searchParams.delete('captura');
     window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    requestCaptureAccess();
+  } else if (autoOpen) {
     requestCaptureAccess();
   }
 })();
